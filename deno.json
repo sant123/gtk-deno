@@ -1,0 +1,27 @@
+{
+  "lock": false,
+  "tasks": {
+    "setup:bin": "mkdir -p bin",
+    "clean": "rm -r bin",
+    "start": {
+      "dependencies": [],
+      "command": "deno --allow-ffi main.ts"
+    },
+    "build:gtk": {
+      "dependencies": ["setup:bin"],
+      "command": "clang++ -fdiagnostics-color=always $(pkg-config --cflags --libs gtk4) -g -std=c++17 -o bin/main main.cc"
+    },
+    "start:gtk": {
+      "dependencies": ["build:gtk"],
+      "command": "./bin/main"
+    }
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/async": "jsr:@std/async@^1.0.12",
+    "valibot": "jsr:@valibot/valibot@^1.0.0",
+    "lib": "./src/lib/mod.ts",
+    "types": "./src/types.ts",
+    "utils": "./src/utils.ts"
+  }
+}
