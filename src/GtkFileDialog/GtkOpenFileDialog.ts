@@ -32,7 +32,7 @@ export class GtkOpenFileDialog extends GtkFileDialog {
     }
   }
 
-  protected override _showDialog() {
+  protected override _showDialog(): void {
     lib.symbols.gtk_file_dialog_open(
       this.gtkFileDialogPtr,
       null,
@@ -42,7 +42,7 @@ export class GtkOpenFileDialog extends GtkFileDialog {
     );
   }
 
-  get fileName() {
+  get fileName(): string {
     return this.#fileName;
   }
 }

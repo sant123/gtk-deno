@@ -54,7 +54,7 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
     }
   }
 
-  protected override _showDialog() {
+  protected override _showDialog(): void {
     lib.symbols.gtk_file_dialog_open_multiple(
       this.gtkFileDialogPtr,
       null,
@@ -64,7 +64,7 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
     );
   }
 
-  get fileNames() {
+  get fileNames(): string[] {
     return this.#fileNames;
   }
 }

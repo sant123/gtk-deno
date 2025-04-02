@@ -34,7 +34,7 @@ export abstract class GtkFileDialog {
     }
   }
 
-  #startGtkEventLoop() {
+  #startGtkEventLoop(): void {
     GtkFileDialog.#intervalId = setInterval(() => {
       if (GtkFileDialog.#instances.size > 0) {
         lib.symbols.g_main_context_iteration(null, false);
@@ -46,7 +46,7 @@ export abstract class GtkFileDialog {
     sourceObject: Deno.PointerValue<unknown>,
     res: Deno.PointerValue<unknown>,
     data: Deno.PointerValue<unknown>,
-  ) {
+  ): void {
     this.gAsyncReadyCallback(sourceObject, res, data);
 
     /**
@@ -89,11 +89,11 @@ export abstract class GtkFileDialog {
     return this.result;
   }
 
-  dispose() {
+  dispose(): void {
     this[Symbol.dispose]();
   }
 
-  [Symbol.dispose]() {
+  [Symbol.dispose](): void {
     if (this.#isDisposed) {
       return;
     }
@@ -118,7 +118,7 @@ export abstract class GtkFileDialog {
     }
   }
 
-  get title() {
+  get title(): string {
     return this.#options.title ?? "";
   }
 
