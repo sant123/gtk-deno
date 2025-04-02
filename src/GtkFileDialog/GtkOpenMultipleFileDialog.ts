@@ -52,22 +52,16 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
        */
       lib.symbols.g_object_unref(gListModelPtr);
     }
-
-    this.finalizeGAsyncReadyCallback();
   }
 
-  override async showDialog(): Promise<GtkDialogResult> {
-    await this.schedule(() => {
-      lib.symbols.gtk_file_dialog_open_multiple(
-        this.gtkFileDialogPtr,
-        null,
-        this.cancellable,
-        this.unsafeCallBack.pointer,
-        null,
-      );
-    });
-
-    return this.result;
+  override _showDialog() {
+    lib.symbols.gtk_file_dialog_open_multiple(
+      this.gtkFileDialogPtr,
+      null,
+      this.cancellable,
+      this.unsafeCallBack.pointer,
+      null,
+    );
   }
 
   get fileNames() {

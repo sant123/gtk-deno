@@ -2,19 +2,19 @@ import { lib } from "lib";
 import { GtkDialogResult, GtkFileDialogOptions } from "./misc/types.ts";
 
 export abstract class GtkFileDialog {
+  #callBackResult: PromiseWithResolvers<void> | null = null;
+  #isDisposed = false;
+  #options: GtkFileDialogOptions = {};
   #queue: Promise<void> = Promise.resolve();
-  protected callBackResult: PromiseWithResolvers<void> | null = null;
+
   protected cancellable: Deno.PointerValue<unknown> = null;
   protected gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
-  protected isDisposed = false;
   protected result = GtkDialogResult.None;
 
   protected unsafeCallBack = new Deno.UnsafeCallback({
     parameters: ["pointer", "pointer", "pointer"],
     result: "void",
-  }, this.gAsyncReadyCallback.bind(this));
-
-  #options: GtkFileDialogOptions = {};
+  }, this.#handleGAsyncReadyCallback.bind(this));
 
   static #instances = new Set<GtkFileDialog>();
   static #intervalId = 0;
@@ -42,14 +42,28 @@ export abstract class GtkFileDialog {
     }, 100);
   }
 
-  protected abstract gAsyncReadyCallback(
+  #handleGAsyncReadyCallback(
     sourceObject: Deno.PointerValue<unknown>,
     res: Deno.PointerValue<unknown>,
     data: Deno.PointerValue<unknown>,
-  ): void;
+  ) {
+    this.gAsyncReadyCallback(sourceObject, res, data);
 
-  protected schedule(action: () => void | Promise<void>) {
-    if (this.isDisposed) {
+    /**
+     * @release GCancellable
+     */
+    lib.symbols.g_object_unref(this.cancellable);
+    this.cancellable = null;
+
+    if (this.result === GtkDialogResult.None) {
+      return this.#callBackResult?.reject();
+    }
+
+    this.#callBackResult?.resolve();
+  }
+
+  #schedule(action: () => void | Promise<void>) {
+    if (this.#isDisposed) {
       this.result = GtkDialogResult.Abort;
       return Promise.resolve();
     }
@@ -59,34 +73,31 @@ export abstract class GtkFileDialog {
        * @pointer GCancellable
        */
       this.cancellable = lib.symbols.g_cancellable_new();
-      this.callBackResult = Promise.withResolvers();
+      this.#callBackResult = Promise.withResolvers();
       await action();
-      await this.callBackResult.promise;
+      await this.#callBackResult.promise;
     });
   }
 
-  protected finalizeGAsyncReadyCallback() {
-    /**
-     * @release GCancellable
-     */
-    lib.symbols.g_object_unref(this.cancellable);
-    this.cancellable = null;
+  protected abstract gAsyncReadyCallback(
+    sourceObject: Deno.PointerValue<unknown>,
+    res: Deno.PointerValue<unknown>,
+    data: Deno.PointerValue<unknown>,
+  ): void;
 
-    if (this.result === GtkDialogResult.None) {
-      return this.callBackResult?.reject();
-    }
-
-    this.callBackResult?.resolve();
+  async showDialog(): Promise<GtkDialogResult> {
+    await this.#schedule(() => this._showDialog());
+    return this.result;
   }
 
-  abstract showDialog(): Promise<GtkDialogResult>;
+  abstract _showDialog(): void | Promise<void>;
 
   dispose() {
     this[Symbol.dispose]();
   }
 
   [Symbol.dispose]() {
-    if (this.isDisposed) {
+    if (this.#isDisposed) {
       return;
     }
 
@@ -95,7 +106,7 @@ export abstract class GtkFileDialog {
       lib.symbols.g_main_context_iteration(null, true);
     }
 
-    this.isDisposed = true;
+    this.#isDisposed = true;
     this.unsafeCallBack.close();
 
     /**
@@ -115,7 +126,7 @@ export abstract class GtkFileDialog {
   }
 
   set title(title: string) {
-    if (this.isDisposed) {
+    if (this.#isDisposed) {
       return;
     }
 
