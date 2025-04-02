@@ -62,23 +62,6 @@ export abstract class GtkFileDialog {
     this.#callBackResult?.resolve();
   }
 
-  #schedule(action: () => void | Promise<void>) {
-    if (this.#isDisposed) {
-      this.result = GtkDialogResult.Abort;
-      return Promise.resolve();
-    }
-
-    return this.#queue = this.#queue.then(async () => {
-      /**
-       * @pointer GCancellable
-       */
-      this.cancellable = lib.symbols.g_cancellable_new();
-      this.#callBackResult = Promise.withResolvers();
-      await action();
-      await this.#callBackResult.promise;
-    });
-  }
-
   protected abstract _showDialog(): void | Promise<void>;
 
   protected abstract gAsyncReadyCallback(
@@ -88,7 +71,21 @@ export abstract class GtkFileDialog {
   ): void;
 
   async showDialog(): Promise<GtkDialogResult> {
-    await this.#schedule(() => this._showDialog());
+    if (this.#isDisposed) {
+      return GtkDialogResult.Abort;
+    }
+
+    this.#queue = this.#queue.then(async () => {
+      /**
+       * @pointer GCancellable
+       */
+      this.cancellable = lib.symbols.g_cancellable_new();
+      this.#callBackResult = Promise.withResolvers();
+      await this._showDialog();
+      await this.#callBackResult.promise;
+    });
+
+    await this.#queue;
     return this.result;
   }
 
