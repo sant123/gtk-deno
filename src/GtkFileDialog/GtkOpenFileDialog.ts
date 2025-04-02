@@ -30,25 +30,19 @@ export class GtkOpenFileDialog extends GtkFileDialog {
     if (this.result === GtkDialogResult.OK) {
       this.#fileName = getFileNameFromGFile(gFilePtr);
     }
-
-    this.finalizeGAsyncReadyCallback();
   }
 
-  override async showDialog(): Promise<GtkDialogResult> {
-    await this.schedule(() => {
-      lib.symbols.gtk_file_dialog_open(
-        this.gtkFileDialogPtr,
-        null,
-        this.cancellable,
-        this.unsafeCallBack.pointer,
-        null,
-      );
-    });
-
-    return this.result;
+  protected override _showDialog(): void {
+    lib.symbols.gtk_file_dialog_open(
+      this.gtkFileDialogPtr,
+      null,
+      this.cancellable,
+      this.unsafeCallBack.pointer,
+      null,
+    );
   }
 
-  get fileName() {
+  get fileName(): string {
     return this.#fileName;
   }
 }
