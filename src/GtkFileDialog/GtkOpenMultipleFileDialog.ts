@@ -54,7 +54,7 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
     }
   }
 
-  override _showDialog() {
+  protected override _showDialog() {
     lib.symbols.gtk_file_dialog_open_multiple(
       this.gtkFileDialogPtr,
       null,

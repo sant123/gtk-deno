@@ -79,6 +79,8 @@ export abstract class GtkFileDialog {
     });
   }
 
+  protected abstract _showDialog(): void | Promise<void>;
+
   protected abstract gAsyncReadyCallback(
     sourceObject: Deno.PointerValue<unknown>,
     res: Deno.PointerValue<unknown>,
@@ -89,8 +91,6 @@ export abstract class GtkFileDialog {
     await this.#schedule(() => this._showDialog());
     return this.result;
   }
-
-  abstract _showDialog(): void | Promise<void>;
 
   dispose() {
     this[Symbol.dispose]();

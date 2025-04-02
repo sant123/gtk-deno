@@ -32,7 +32,7 @@ export class GtkOpenFileDialog extends GtkFileDialog {
     }
   }
 
-  override _showDialog() {
+  protected override _showDialog() {
     lib.symbols.gtk_file_dialog_open(
       this.gtkFileDialogPtr,
       null,
