@@ -1,4 +1,5 @@
 import { lib } from "lib";
+import { ref, unref } from "loop";
 import { GtkDialogResult, GtkFileDialogOptions } from "./misc/types.ts";
 
 export abstract class GtkFileDialog {
@@ -16,9 +17,6 @@ export abstract class GtkFileDialog {
     result: "void",
   }, this.#handleGAsyncReadyCallback.bind(this));
 
-  static #instances = new Set<GtkFileDialog>();
-  static #intervalId = 0;
-
   constructor() {
     lib.symbols.gtk_init();
 
@@ -27,19 +25,7 @@ export abstract class GtkFileDialog {
      */
     this.gtkFileDialogPtr = lib.symbols.gtk_file_dialog_new();
 
-    GtkFileDialog.#instances.add(this);
-
-    if (GtkFileDialog.#instances.size === 1) {
-      this.#startGtkEventLoop();
-    }
-  }
-
-  #startGtkEventLoop(): void {
-    GtkFileDialog.#intervalId = setInterval(() => {
-      if (GtkFileDialog.#instances.size > 0) {
-        lib.symbols.g_main_context_iteration(null, false);
-      }
-    }, 100);
+    ref(this);
   }
 
   #handleGAsyncReadyCallback(
@@ -111,11 +97,7 @@ export abstract class GtkFileDialog {
      */
     lib.symbols.g_object_unref(this.gtkFileDialogPtr);
 
-    GtkFileDialog.#instances.delete(this);
-
-    if (!GtkFileDialog.#instances.size) {
-      clearInterval(GtkFileDialog.#intervalId);
-    }
+    unref(this);
   }
 
   get title(): string {
