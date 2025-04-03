@@ -1,7 +1,7 @@
 import { GError } from "types";
 import { lib } from "lib";
 
-export function getGErrorFromPtr(
+export function getGErrorFromDoublePtr(
   ptr: Deno.PointerValue<unknown>,
 ): GError | null {
   if (!ptr) {
@@ -58,4 +58,20 @@ export function getFileNameFromGFile(ptr: Deno.PointerValue<unknown>): string {
   lib.symbols.g_object_unref(ptr);
 
   return fileName;
+}
+
+export function getStringFromDoublePtr(
+  ptr: Deno.PointerValue<unknown>,
+): string {
+  if (!ptr) {
+    return "";
+  }
+
+  const stringPtr = new Deno.UnsafePointerView(ptr).getPointer();
+
+  if (!stringPtr) {
+    return "";
+  }
+
+  return Deno.UnsafePointerView.getCString(stringPtr);
 }

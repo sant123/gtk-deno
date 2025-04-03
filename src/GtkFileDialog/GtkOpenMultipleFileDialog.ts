@@ -1,4 +1,4 @@
-import { getFileNameFromGFile, getGErrorFromPtr } from "utils";
+import { getFileNameFromGFile, getGErrorFromDoublePtr } from "utils";
 import { lib } from "lib";
 
 import { getDialogResultFromGError } from "./misc/utils.ts";
@@ -24,7 +24,7 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
       errorPtr,
     );
 
-    const error = getGErrorFromPtr(errorPtr);
+    const error = getGErrorFromDoublePtr(errorPtr);
     this.result = getDialogResultFromGError(error);
 
     if (this.result === GtkDialogResult.OK) {
