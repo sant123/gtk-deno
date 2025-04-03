@@ -75,3 +75,10 @@ export function getStringFromDoublePtr(
 
   return Deno.UnsafePointerView.getCString(stringPtr);
 }
+
+export function getPtrFromString(str: string): Deno.PointerValue<unknown> {
+  const bytes = new TextEncoder().encode(str + "\0");
+  const stringPtr = Deno.UnsafePointer.of(bytes);
+
+  return stringPtr;
+}
