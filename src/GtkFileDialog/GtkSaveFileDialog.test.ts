@@ -10,10 +10,10 @@ import {
 } from "./misc/schemas.ts";
 
 import { GtkDialogResult } from "./misc/types.ts";
-import { GtkOpenFileDialog } from "./GtkOpenFileDialog.ts";
+import { GtkSaveFileDialog } from "./GtkSaveFileDialog.ts";
 
-Deno.test("GtkOpenFileDialog()", async (t) => {
-  using dialog = new GtkOpenFileDialog();
+Deno.test("GtkSaveFileDialog()", async (t) => {
+  using dialog = new GtkSaveFileDialog();
   v.assert(GtkFileDialogDefaultSchema, dialog);
 
   let result = await dialog.showDialog();
@@ -37,7 +37,7 @@ Deno.test("GtkOpenFileDialog()", async (t) => {
 });
 
 Deno.test("Single instance and multiple calls to showDialog() are serial", async () => {
-  using dialog = new GtkOpenFileDialog();
+  using dialog = new GtkSaveFileDialog();
   v.assert(GtkFileDialogDefaultSchema, dialog);
 
   const results = await Promise.all([
@@ -51,15 +51,15 @@ Deno.test("Single instance and multiple calls to showDialog() are serial", async
 });
 
 Deno.test("Multiple instance and multiple calls to showDialog() are parallel", async () => {
-  using d1 = new GtkOpenFileDialog();
+  using d1 = new GtkSaveFileDialog();
   d1.title = "d1";
   v.assert(GtkFileDialogDefaultSchema, d1);
 
-  using d2 = new GtkOpenFileDialog();
+  using d2 = new GtkSaveFileDialog();
   d2.title = "d2";
   v.assert(GtkFileDialogDefaultSchema, d2);
 
-  using d3 = new GtkOpenFileDialog();
+  using d3 = new GtkSaveFileDialog();
   d3.title = "d3";
   v.assert(GtkFileDialogDefaultSchema, d3);
 
@@ -74,7 +74,7 @@ Deno.test("Multiple instance and multiple calls to showDialog() are parallel", a
 });
 
 Deno.test("Return abort in showDialog() if GtkFileDialog is disposed early", async () => {
-  const dialog = new GtkOpenFileDialog();
+  const dialog = new GtkSaveFileDialog();
   v.assert(GtkFileDialogDefaultSchema, dialog);
 
   dialog.dispose();
@@ -83,7 +83,7 @@ Deno.test("Return abort in showDialog() if GtkFileDialog is disposed early", asy
 });
 
 Deno.test("After dialog is open, return abort in showDialog() if GtkFileDialog is disposed early", async () => {
-  const dialog = new GtkOpenFileDialog();
+  const dialog = new GtkSaveFileDialog();
   v.assert(GtkFileDialogDefaultSchema, dialog);
   const result = dialog.showDialog();
 
@@ -93,6 +93,6 @@ Deno.test("After dialog is open, return abort in showDialog() if GtkFileDialog i
 });
 
 Deno.test("Dispose more than once should be no-op", () => {
-  using dialog = new GtkOpenFileDialog();
+  using dialog = new GtkSaveFileDialog();
   dialog.dispose();
 });
