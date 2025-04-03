@@ -27,6 +27,10 @@ export const GtkFileDialog = {
     parameters: [],
     result: "pointer",
   },
+  gtk_file_dialog_set_accept_label: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
   gtk_file_dialog_set_title: {
     parameters: ["pointer", "pointer"],
     result: "void",

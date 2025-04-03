@@ -1,3 +1,4 @@
+import { getPtrFromString } from "utils";
 import { lib } from "lib";
 import { ref, unref } from "loop";
 import { GtkDialogResult, GtkFileDialogOptions } from "./misc/types.ts";
@@ -109,8 +110,7 @@ export abstract class GtkFileDialog {
       return;
     }
 
-    const bytes = new TextEncoder().encode(title + "\0");
-    const stringPtr = Deno.UnsafePointer.of(bytes);
+    const stringPtr = getPtrFromString(title);
 
     lib.symbols.gtk_file_dialog_set_title(
       this.gtkFileDialogPtr,
@@ -118,5 +118,24 @@ export abstract class GtkFileDialog {
     );
 
     this.#options.title = title;
+  }
+
+  get acceptLabel(): string {
+    return this.#options.acceptLabel ?? "";
+  }
+
+  set acceptLabel(acceptLabel: string) {
+    if (this.#isDisposed) {
+      return;
+    }
+
+    const stringPtr = getPtrFromString(acceptLabel);
+
+    lib.symbols.gtk_file_dialog_set_accept_label(
+      this.gtkFileDialogPtr,
+      stringPtr,
+    );
+
+    this.#options.acceptLabel = acceptLabel;
   }
 }

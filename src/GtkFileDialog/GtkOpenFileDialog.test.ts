@@ -53,14 +53,17 @@ Deno.test("Single instance and multiple calls to showDialog() are serial", async
 Deno.test("Multiple instance and multiple calls to showDialog() are parallel", async () => {
   using d1 = new GtkOpenFileDialog();
   d1.title = "d1";
+  d1.acceptLabel = "Open for d1";
   v.assert(GtkFileDialogDefaultSchema, d1);
 
   using d2 = new GtkOpenFileDialog();
   d2.title = "d2";
+  d2.acceptLabel = "Open for d2";
   v.assert(GtkFileDialogDefaultSchema, d2);
 
   using d3 = new GtkOpenFileDialog();
   d3.title = "d3";
+  d3.acceptLabel = "Open for d3";
   v.assert(GtkFileDialogDefaultSchema, d3);
 
   const results = await Promise.all([
