@@ -21,6 +21,7 @@
     "@std/async": "jsr:@std/async@^1.0.12",
     "valibot": "jsr:@valibot/valibot@^1.0.0",
     "lib": "./src/lib/mod.ts",
+    "loop": "./src/loop.ts",
     "types": "./src/types.ts",
     "utils": "./src/utils.ts"
   }
