@@ -15,6 +15,14 @@ export const GtkFileDialog = {
     parameters: ["pointer", "pointer", "pointer"],
     result: "pointer",
   },
+  gtk_file_dialog_save: {
+    parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_save_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "pointer",
+  },
   gtk_file_dialog_new: {
     parameters: [],
     result: "pointer",
