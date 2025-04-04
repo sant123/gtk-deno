@@ -6,8 +6,13 @@ import { GtkDialogResult, GtkFileDialogOptions } from "./misc/types.ts";
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
   #isDisposed = false;
-  #options: GtkFileDialogOptions = {};
   #queue: Promise<void> = Promise.resolve();
+
+  #options: GtkFileDialogOptions = {
+    acceptLabel: "",
+    initialName: "",
+    title: "",
+  };
 
   protected cancellable: Deno.PointerValue<unknown> = null;
   protected gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
@@ -102,7 +107,7 @@ export abstract class GtkFileDialog {
   }
 
   get title(): string {
-    return this.#options.title ?? "";
+    return this.#options.title;
   }
 
   set title(title: string) {
@@ -121,7 +126,7 @@ export abstract class GtkFileDialog {
   }
 
   get acceptLabel(): string {
-    return this.#options.acceptLabel ?? "";
+    return this.#options.acceptLabel;
   }
 
   set acceptLabel(acceptLabel: string) {
@@ -137,5 +142,24 @@ export abstract class GtkFileDialog {
     );
 
     this.#options.acceptLabel = acceptLabel;
+  }
+
+  get initialName(): string {
+    return this.#options.initialName;
+  }
+
+  set initialName(initialName: string) {
+    if (this.#isDisposed) {
+      return;
+    }
+
+    const stringPtr = getPtrFromString(initialName);
+
+    lib.symbols.gtk_file_dialog_set_initial_name(
+      this.gtkFileDialogPtr,
+      stringPtr,
+    );
+
+    this.#options.initialName = initialName;
   }
 }
