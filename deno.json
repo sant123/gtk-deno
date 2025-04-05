@@ -3,10 +3,6 @@
   "tasks": {
     "setup:bin": "mkdir -p bin",
     "clean": "rm -r bin",
-    "start": {
-      "dependencies": [],
-      "command": "deno --allow-ffi main.ts"
-    },
     "build:gtk": {
       "dependencies": ["setup:bin"],
       "command": "clang++ -fdiagnostics-color=always $(pkg-config --cflags --libs gtk4) -g -std=c++17 -o bin/main main.cc"
