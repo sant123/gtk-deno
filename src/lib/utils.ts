@@ -5,5 +5,3 @@ export function getLibName(): string {
 
   return `${prefix}gtk-4${suffix}`;
 }
-
-console.log(getLibName());
