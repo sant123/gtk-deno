@@ -1,27 +1,8 @@
 import { getLibName } from "./utils.ts";
-import { GioCancellable } from "./Gio.Cancellable.ts";
-import { GioFile } from "./Gio.File.ts";
-import { GioListModel } from "./Gio.ListModel.ts";
-import { GLib } from "./GLib.ts";
-import { GLibError } from "./GLib.Error.ts";
-import { GLibMainContext } from "./GLib.MainContext.ts";
-import { GObjectObject } from "./GObject.Object.ts";
-import { Gtk } from "./Gtk.ts";
-import { GtkFileDialog } from "./Gtk.FileDialog.ts";
+import { symbols } from "./symbols.ts";
 
 const libPath = Deno.env.get("GTK_LIB") ?? getLibName();
-
-export const lib = Deno.dlopen(libPath, {
-  ...GioCancellable,
-  ...GioFile,
-  ...GioListModel,
-  ...GLib,
-  ...GLibError,
-  ...GLibMainContext,
-  ...GObjectObject,
-  ...Gtk,
-  ...GtkFileDialog,
-});
+export const lib = Deno.dlopen(libPath, symbols);
 
 if (Deno.env.has("GTK_DEBUG")) {
   const major = lib.symbols.gtk_get_major_version();
