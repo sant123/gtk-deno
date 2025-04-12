@@ -1,0 +1,7 @@
+GTK_DEBUG= deno -E --allow-ffi lib/mod.ts
+GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi lib/mod.ts
+
+meson configure builddir -Dbuildtype=release -Dprefix=/gtk4
+meson setup builddir
+meson compile -C builddir
+meson install -C builddir --destdir=$(pwd)/../..

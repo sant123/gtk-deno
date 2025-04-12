@@ -16,20 +16,9 @@ export function resolveGtkLibrary(): string {
     return Deno.env.get("GTK_LIB")!;
   }
 
-  if (Deno.env.get("USE_SYSTEM_GTK") === "1") {
-    if (debug) {
-      console.log(`Using system GTK`);
-    }
-    return getLibName();
-  }
-
-  const vendoredPath = (() => {
-    return "./third_party/gtk/builddir/gtk/libgtk-4.so";
-  })();
-
   if (debug) {
-    console.log(`Using vendored GTK: ${vendoredPath}`);
+    console.log(`Using system GTK`);
   }
 
-  return vendoredPath;
+  return getLibName();
 }
