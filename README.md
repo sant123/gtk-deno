@@ -10,6 +10,10 @@ For installing Gtk4 on your distribution follow these steps:
 
 `sudo dnf install gtk4-devel`
 
+#### Ubuntu
+
+`sudo apt install libgtk-4-dev`
+
 You can check which version your are using this way:
 
 `GTK_DEBUG= deno -E --allow-ffi lib/mod.ts`
