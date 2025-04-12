@@ -8,11 +8,11 @@ For installing Gtk4 on your distribution follow these steps:
 
 ### Fedora
 
-- `sudo dnf install gtk4-devel`
+`sudo dnf install gtk4-devel`
 
 You can check which version your are using this way:
 
-- `GTK_DEBUG= deno -E --allow-ffi lib/mod.ts`
+`GTK_DEBUG= deno -E --allow-ffi lib/mod.ts`
 
 ## Building
 
@@ -20,13 +20,17 @@ You can check which version your are using this way:
 
 You can use Gtk4 submodule present in this repository, please follow these steps:
 
-- `git clone https://github.com/sant123/gtk-deno`
-- `git submodule update --init --recursive`
+`git clone https://github.com/sant123/gtk-deno`
+
+`git submodule update --init --recursive`
+
+`cd third_party/gtk`
 
 #### Fedora
 
-- `sudo dnf install meson ninja-build`
-- `sudo dnf builddep gtk4`
+`sudo dnf install meson ninja-build`
+
+`sudo dnf builddep gtk4`
 
 If `builddep` isn't available, install it first:
 
@@ -36,21 +40,24 @@ If `builddep` isn't available, install it first:
 
 Gtk4 uses meson and ninja for building:
 
-- `meson configure builddir -Dbuildtype=release -Dprefix=/gtk4`
-- `meson setup builddir`
+#### Fedora
 
-`setup` will take sometime while it resolve dependencies found in your machine or wrap files.
+`meson setup builddir -Dbuildtype=release -Dprefix=/gtk4`
 
-- `meson compile -C builddir`
+This will take sometime while it resolve dependencies found in your machine or wrap files.
 
-`compile` will take longer, so be patient.
+`meson compile -C builddir`
 
-- `meson install -C builddir --destdir=$(pwd)/../..`
+This will take longer, so be patient.
+
+`meson install -C builddir --destdir=$(pwd)/../..`
 
 After installing you should now have a gtk4 folder in the root of this repository. So now you can run:
 
+`cd ../..`
+
 #### Fedora
 
-- `GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi lib/mod.ts`
+`GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi lib/mod.ts`
 
 This will print the Gtk4 version recently built.
