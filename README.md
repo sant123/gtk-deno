@@ -1,67 +1,102 @@
 # gtk-deno
 
-Gtk4 bindings for Deno + widgets
+Gtk4 bindings for Deno + widgets.
 
 ## Install
 
-For installing Gtk4 on your distribution follow these steps:
+To install Gtk4 on your system, follow these steps:
 
 ### Fedora
 
-`sudo dnf install gtk4-devel`
+```bash
+sudo dnf install gtk4-devel
+```
 
-#### Ubuntu
+### Ubuntu
 
-`sudo apt install libgtk-4-dev`
+```bash
+sudo apt install libgtk-4-dev
+```
 
-You can check which version your are using this way:
+You can check which version you are using by running:
 
-`GTK_DEBUG= deno -E --allow-ffi lib/mod.ts`
+```bash
+GTK_DEBUG= deno -E --allow-ffi lib/mod.ts
+```
 
 ## Building
 
 ### Installing dependencies
 
-You can use Gtk4 submodule present in this repository, please follow these steps:
+You can use the Gtk4 submodule included in this repository. Follow these steps:
 
-`git clone https://github.com/sant123/gtk-deno`
-
-`git submodule update --init --recursive`
-
-`cd third_party/gtk`
-
-#### Fedora
-
-`sudo dnf install meson ninja-build`
-
-`sudo dnf builddep gtk4`
-
-If `builddep` isn't available, install it first:
-
-- `sudo dnf install dnf-plugins-core`
-
-### Prepare and compile
-
-Gtk4 uses meson and ninja for building:
+```bash
+git clone https://github.com/sant123/gtk-deno
+cd gtk-deno
+git submodule update --init --recursive
+cd third_party/gtk
+```
 
 #### Fedora
 
-`meson setup builddir -Dbuildtype=release -Dprefix=/gtk4`
+Install required tools:
 
-This will take sometime while it resolve dependencies found in your machine or wrap files.
+```bash
+sudo dnf install meson ninja-build
+```
 
-`meson compile -C builddir`
+Install build dependencies for Gtk4:
 
-This will take longer, so be patient.
+```bash
+sudo dnf builddep gtk4
+```
 
-`meson install -C builddir --destdir=$(pwd)/../..`
+If `builddep` is not available, you can install it with:
 
-After installing you should now have a gtk4 folder in the root of this repository. So now you can run:
+```bash
+sudo dnf install dnf-plugins-core
+```
 
-`cd ../..`
+### Preparing and compiling
+
+Gtk4 uses Meson and Ninja for building:
+
+```bash
+meson setup builddir -Dbuildtype=release -Dprefix=/gtk4
+```
+
+This will take some time as it resolves dependencies found on your machine or wrap files.
+
+Compile the project:
+
+```bash
+meson compile -C builddir
+```
+
+This step will take longer, so be patient.
+
+Install the compiled files:
+
+```bash
+meson install -C builddir --destdir=$(pwd)/../..
+```
+
+After installing, you should now have a `gtk4/` folder at the root of this repository.
+
+Go back to the project root:
+
+```bash
+cd ../..
+```
+
+### Testing your build
 
 #### Fedora
 
-`GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi lib/mod.ts`
+You can test the freshly built Gtk4 version with:
 
-This will print the Gtk4 version recently built.
+```bash
+GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi lib/mod.ts
+```
+
+This should print the Gtk4 version you just built.
