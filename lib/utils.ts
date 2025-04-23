@@ -1,4 +1,4 @@
-export const debug = Deno.env.has("GTK_DEBUG");
+const debug = Deno.env.has("GTK_DEBUG");
 
 export function getLibName(): string {
   const os = Deno.build.os;
@@ -23,4 +23,29 @@ export function resolveGtkLibrary(): string {
   }
 
   return libName;
+}
+
+export function getVersion(libPath: string) {
+  const lib = Deno.dlopen(libPath, {
+    gtk_get_major_version: {
+      parameters: [],
+      result: "u32",
+    },
+    gtk_get_minor_version: {
+      parameters: [],
+      result: "u32",
+    },
+    gtk_get_micro_version: {
+      parameters: [],
+      result: "u32",
+    },
+  });
+
+  const major = lib.symbols.gtk_get_major_version();
+  const minor = lib.symbols.gtk_get_minor_version();
+  const micro = lib.symbols.gtk_get_micro_version();
+
+  lib.close();
+
+  return { major, minor, micro };
 }
