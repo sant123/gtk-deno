@@ -21,7 +21,7 @@ sudo apt install libgtk-4-dev
 You can check which version you are using by running:
 
 ```bash
-GTK_DEBUG= deno -E --allow-ffi lib/mod.ts
+GTK_DEBUG= deno -E --allow-ffi src/version.ts
 ```
 
 ## Building
@@ -96,7 +96,7 @@ cd ../..
 You can test the freshly built Gtk4 version with:
 
 ```bash
-GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi lib/mod.ts
+GTK_DEBUG= GTK_LIB=gtk4/lib64/libgtk-4.so deno -E --allow-ffi src/version.ts
 ```
 
 This should print the Gtk4 version you just built.
