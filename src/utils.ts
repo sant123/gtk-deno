@@ -37,7 +37,7 @@ export function getFileNameFromGFile(ptr: Deno.PointerValue<unknown>): string {
   }
 
   /**
-   * @pointer char*
+   * @pointer char
    */
   const pathPtr = lib.symbols.g_file_get_path(ptr);
 
@@ -48,7 +48,7 @@ export function getFileNameFromGFile(ptr: Deno.PointerValue<unknown>): string {
   const fileName = Deno.UnsafePointerView.getCString(pathPtr);
 
   /**
-   * @release char*
+   * @release char
    */
   lib.symbols.g_free(pathPtr);
 
