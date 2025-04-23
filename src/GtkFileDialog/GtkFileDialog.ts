@@ -10,6 +10,7 @@ export abstract class GtkFileDialog {
 
   #options: GtkFileDialogOptions = {
     acceptLabel: "",
+    initialFile: "",
     initialFolder: "",
     initialName: "",
     title: "",
@@ -107,39 +108,15 @@ export abstract class GtkFileDialog {
     unref(this);
   }
 
-  get title(): string {
-    return this.#options.title;
-  }
-
-  /**
-   * Gets/Sets the title that will be shown on the file chooser dialog.
-   * 
-   * Available since: 4.10
-   */
-  set title(title: string) {
-    if (this.#isDisposed) {
-      return;
-    }
-
-    const stringPtr = getPtrFromString(title);
-
-    lib.symbols.gtk_file_dialog_set_title(
-      this.gtkFileDialogPtr,
-      stringPtr,
-    );
-
-    this.#options.title = title;
-  }
-
   get acceptLabel(): string {
     return this.#options.acceptLabel;
   }
 
   /**
    * Gets/Sets the label shown on the file chooser’s accept button.
-   * 
+   *
    * Leaving the accept label unset will fall back to a default label, depending on what API is used to launch the file dialog.
-   * 
+   *
    * Available since: 4.10
    */
   set acceptLabel(acceptLabel: string) {
@@ -157,13 +134,49 @@ export abstract class GtkFileDialog {
     this.#options.acceptLabel = acceptLabel;
   }
 
+  get initialFile(): string {
+    return this.#options.initialFile;
+  }
+
+  /**
+   * Gets/Sets the file that will be initially selected in the file chooser dialog.
+   *
+   * This function is a shortcut for calling both `initialFolder` and `initialName` with the directory and name of file, respectively.
+   *
+   * Available since: 4.10
+   */
+  set initialFile(initialFile: string) {
+    if (this.#isDisposed) {
+      return;
+    }
+
+    const stringPtr = getPtrFromString(initialFile);
+
+    /**
+     * @pointer GFile
+     */
+    const gFilePtr = lib.symbols.g_file_new_for_path(stringPtr);
+
+    lib.symbols.gtk_file_dialog_set_initial_file(
+      this.gtkFileDialogPtr,
+      gFilePtr,
+    );
+
+    /**
+     * @release GFile
+     */
+    lib.symbols.g_object_unref(gFilePtr);
+
+    this.#options.initialFile = initialFile;
+  }
+
   get initialFolder(): string {
     return this.#options.initialFolder;
   }
 
   /**
    * Gets/Sets the folder that will be set as the initial folder in the file chooser dialog.
-   * 
+   *
    * Available since: 4.10
    */
   set initialFolder(initialFolder: string) {
@@ -197,11 +210,11 @@ export abstract class GtkFileDialog {
 
   /**
    * Gets/Sets the filename that will be initially selected.
-   * 
+   *
    * For save dialogs, `initialName` will usually be pre-entered into the name field.
-   * 
+   *
    * If a file with this name already exists in the directory set via `initialFolder`, the dialog will preselect it.
-   * 
+   *
    * Available since: 4.10
    */
   set initialName(initialName: string) {
@@ -217,5 +230,29 @@ export abstract class GtkFileDialog {
     );
 
     this.#options.initialName = initialName;
+  }
+
+  get title(): string {
+    return this.#options.title;
+  }
+
+  /**
+   * Gets/Sets the title that will be shown on the file chooser dialog.
+   *
+   * Available since: 4.10
+   */
+  set title(title: string) {
+    if (this.#isDisposed) {
+      return;
+    }
+
+    const stringPtr = getPtrFromString(title);
+
+    lib.symbols.gtk_file_dialog_set_title(
+      this.gtkFileDialogPtr,
+      stringPtr,
+    );
+
+    this.#options.title = title;
   }
 }

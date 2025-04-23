@@ -7,6 +7,7 @@ export enum GtkDialogResult {
 
 export interface GtkFileDialogOptions {
   acceptLabel: string;
+  initialFile: string;
   initialFolder: string;
   initialName: string;
   title: string;
