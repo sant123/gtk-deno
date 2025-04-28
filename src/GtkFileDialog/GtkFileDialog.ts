@@ -97,13 +97,13 @@ export abstract class GtkFileDialog {
       lib.symbols.g_main_context_iteration(null, true);
     }
 
-    this.#isDisposed = true;
     this.unsafeCallBack.close();
 
     /**
      * @release GtkFileDialog
      */
     lib.symbols.g_object_unref(this.gtkFileDialogPtr);
+    this.#isDisposed = true;
 
     unref(this);
   }
