@@ -1,6 +1,9 @@
-import { GtkFileFilter } from "../../GtkFileFilter/GtkFileFilter.ts";
-import { GtkOpenFileDialog } from "../GtkOpenFileDialog.ts";
-import { GtkDialogResult } from "../misc/types.ts";
+import {
+  GtkDialogResult,
+  GtkOpenFileDialog,
+} from "../../src/GtkFileDialog/mod.ts";
+
+import { GtkFileFilter } from "../../src/GtkFileFilter/mod.ts";
 
 using dialog = new GtkOpenFileDialog();
 using filter = new GtkFileFilter();

@@ -1,5 +1,7 @@
-import { GtkOpenMultipleFileDialog } from "../GtkOpenMultipleFileDialog.ts";
-import { GtkDialogResult } from "../misc/types.ts";
+import {
+  GtkDialogResult,
+  GtkOpenMultipleFileDialog,
+} from "../../src/GtkFileDialog/mod.ts";
 
 using dialog = new GtkOpenMultipleFileDialog();
 

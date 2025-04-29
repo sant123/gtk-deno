@@ -111,10 +111,10 @@ export class GtkFileFilter {
    * Internal use only
    */
   [GtkFileFilterSymbol] = {
-    getPtr: () => {
+    getPtr: (): Deno.PointerValue<unknown> => {
       return this.#gtkFileFilterPtr;
     },
-    isEmpty: () => {
+    isEmpty: (): boolean => {
       return this.#isEmpty;
     },
   };

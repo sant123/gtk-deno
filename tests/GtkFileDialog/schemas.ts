@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { GtkDialogResult } from "./types.ts";
+import { GtkDialogResult } from "../../src/GtkFileDialog/mod.ts";
 
 const minFileNameStringLength = 2; // Min two chars
 const minFileNamesArrayLength = 2; // Min two files

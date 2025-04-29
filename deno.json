@@ -1,5 +1,18 @@
 {
   "lock": false,
+  "name": "@onyx/gtk",
+  "version": "0.0.1",
+  "publish": {
+    "exclude": [
+      ".clang-format",
+      ".gitmodules",
+      ".vscode",
+      "examples",
+      "main.cc",
+      "tests",
+      "third_party"
+    ]
+  },
   "exports": {
     ".": "./src/version.ts",
     "./GtkFileDialog": "./src/GtkFileDialog/mod.ts",

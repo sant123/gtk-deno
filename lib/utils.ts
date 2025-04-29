@@ -1,5 +1,11 @@
 const debug = Deno.env.has("GTK_DEBUG");
 
+export interface GtkVersion {
+  major: number;
+  minor: number;
+  micro: number;
+}
+
 export function getLibName(): string {
   const os = Deno.build.os;
   const prefix = os === "windows" ? "" : "lib";
@@ -25,7 +31,7 @@ export function resolveGtkLibrary(): string {
   return libName;
 }
 
-export function getVersion(libPath: string) {
+export function getVersion(libPath: string): GtkVersion {
   const lib = Deno.dlopen(libPath, {
     gtk_get_major_version: {
       parameters: [],
