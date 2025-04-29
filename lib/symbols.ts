@@ -7,6 +7,7 @@ import { GLibMainContext } from "./modules/GLib.MainContext.ts";
 import { GObjectObject } from "./modules/GObject.Object.ts";
 import { Gtk } from "./modules/Gtk.ts";
 import { GtkFileDialog } from "./modules/Gtk.FileDialog.ts";
+import { GtkFileFilter } from "./modules/Gtk.FileFilter.ts";
 
 export const symbols = {
   ...GioCancellable,
@@ -18,4 +19,5 @@ export const symbols = {
   ...GObjectObject,
   ...Gtk,
   ...GtkFileDialog,
+  ...GtkFileFilter,
 };
