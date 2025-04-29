@@ -7,10 +7,12 @@ import {
   GtkFileDialogOkSchema,
   GtkFileDialogResultSchema,
   GtkFileDialogResultsSchema,
-} from "./misc/schemas.ts";
+} from "./schemas.ts";
 
-import { GtkDialogResult } from "./misc/types.ts";
-import { GtkOpenFileDialog } from "./GtkOpenFileDialog.ts";
+import {
+  GtkDialogResult,
+  GtkOpenFileDialog,
+} from "../../src/GtkFileDialog/mod.ts";
 
 Deno.test("GtkOpenFileDialog()", async (t) => {
   using dialog = new GtkOpenFileDialog();

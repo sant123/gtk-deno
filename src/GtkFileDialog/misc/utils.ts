@@ -1,4 +1,4 @@
-import { GError } from "types";
+import type { GError } from "types";
 import { GtkDialogResult } from "./types.ts";
 
 export function getDialogResultFromGError(error: GError | null) {

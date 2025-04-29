@@ -1,10 +1,10 @@
 import { getPtrFromString } from "utils";
 import { lib } from "lib";
 import { ref, unref } from "loop";
-import { GtkDialogResult, GtkFileDialogOptions } from "./misc/types.ts";
+import { GtkDialogResult, type GtkFileDialogOptions } from "./misc/types.ts";
 
 import {
-  GtkFileFilter,
+  type GtkFileFilter,
   GtkFileFilterSymbol,
 } from "../GtkFileFilter/GtkFileFilter.ts";
 
@@ -28,7 +28,10 @@ export abstract class GtkFileDialog {
   protected gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
   protected result = GtkDialogResult.None;
 
-  protected unsafeCallBack = new Deno.UnsafeCallback({
+  protected unsafeCallBack: Deno.UnsafeCallback<{
+    readonly parameters: readonly ["pointer", "pointer", "pointer"];
+    readonly result: "void";
+  }> = new Deno.UnsafeCallback({
     parameters: ["pointer", "pointer", "pointer"],
     result: "void",
   }, this.#handleGAsyncReadyCallback.bind(this));

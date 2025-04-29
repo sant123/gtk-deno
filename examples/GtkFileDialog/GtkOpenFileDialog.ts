@@ -1,7 +1,9 @@
-import { GtkSaveFileDialog } from "../GtkSaveFileDialog.ts";
-import { GtkDialogResult } from "../misc/types.ts";
+import {
+  GtkDialogResult,
+  GtkOpenFileDialog,
+} from "../../src/GtkFileDialog/mod.ts";
 
-using dialog = new GtkSaveFileDialog();
+using dialog = new GtkOpenFileDialog();
 
 if (await dialog.showDialog() === GtkDialogResult.OK) {
   console.log("Selected file:", dialog.fileName);

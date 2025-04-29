@@ -1,4 +1,4 @@
-import { GError } from "types";
+import type { GError } from "types";
 import { lib } from "lib";
 
 export function getGErrorFromDoublePtr(
