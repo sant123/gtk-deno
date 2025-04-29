@@ -3,6 +3,14 @@ import { lib } from "lib";
 import { ref, unref } from "loop";
 import { GtkDialogResult, GtkFileDialogOptions } from "./misc/types.ts";
 
+import {
+  GtkFileFilter,
+  GtkFileFilterSymbol,
+} from "../GtkFileFilter/GtkFileFilter.ts";
+
+const MSG_EMPTY_FILTER =
+  "GtkFileDialog received an empty GtkFileFilter. This is discouraged.";
+
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
   #isDisposed = false;
@@ -81,6 +89,29 @@ export abstract class GtkFileDialog {
 
     await this.#queue;
     return this.result;
+  }
+
+  /**
+   * Sets the filter that will be selected by default in the file chooser dialog.
+   *
+   * If set to `null`, the first item in `instance.setFilters()` will be used as the default filter. If that list is empty, the dialog will be unfiltered.
+   *
+   * Available since: 4.10
+   * @param filter The file filter.
+   */
+  setDefaultFilter(filter: GtkFileFilter | null) {
+    const isEmpty = filter?.[GtkFileFilterSymbol].isEmpty();
+
+    if (isEmpty) {
+      throw new Error(MSG_EMPTY_FILTER);
+    }
+
+    const filterPtr = filter?.[GtkFileFilterSymbol].getPtr() ?? null;
+
+    lib.symbols.gtk_file_dialog_set_default_filter(
+      this.gtkFileDialogPtr,
+      filterPtr,
+    );
   }
 
   dispose(): void {

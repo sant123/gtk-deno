@@ -31,6 +31,10 @@ export const GtkFileDialog = {
     parameters: ["pointer", "pointer"],
     result: "void",
   },
+  gtk_file_dialog_set_default_filter: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
   gtk_file_dialog_set_initial_file: {
     parameters: ["pointer", "pointer"],
     result: "void",

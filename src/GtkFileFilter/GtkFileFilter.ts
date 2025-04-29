@@ -6,6 +6,7 @@ export const GtkFileFilterSymbol = Symbol("GtkFileFilter");
 export class GtkFileFilter {
   #gtkFileFilterPtr: Deno.PointerValue<unknown> = null;
   #isDisposed = false;
+  #isEmpty = true;
 
   /**
    * Creates a new GtkFileFilter with no rules added to it
@@ -32,6 +33,8 @@ export class GtkFileFilter {
       this.#gtkFileFilterPtr,
       stringPtr,
     );
+
+    this.#isEmpty = false;
   }
 
   /**
@@ -51,6 +54,8 @@ export class GtkFileFilter {
       this.#gtkFileFilterPtr,
       stringPtr,
     );
+
+    this.#isEmpty = false;
   }
 
   /**
@@ -82,6 +87,8 @@ export class GtkFileFilter {
       this.#gtkFileFilterPtr,
       stringPtr,
     );
+
+    this.#isEmpty = false;
   }
 
   dispose(): void {
@@ -106,6 +113,9 @@ export class GtkFileFilter {
   [GtkFileFilterSymbol] = {
     getPtr: () => {
       return this.#gtkFileFilterPtr;
+    },
+    isEmpty: () => {
+      return this.#isEmpty;
     },
   };
 }
