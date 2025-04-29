@@ -2,7 +2,8 @@
   "lock": false,
   "exports": {
     ".": "./src/version.ts",
-    "./GtkFileDialog": "./src/GtkFileDialog/mod.ts"
+    "./GtkFileDialog": "./src/GtkFileDialog/mod.ts",
+    "./GtkFileFilter": "./src/GtkFileFilter/mod.ts"
   },
   "tasks": {
     "setup:bin": "mkdir -p bin",
