@@ -129,32 +129,6 @@ export abstract class GtkFileDialog {
     unref(this);
   }
 
-  [GtkSymbol] = {
-    child: {
-      gAsyncReadyCallback: (
-        _sourceObject: Deno.PointerValue<unknown>,
-        _res: Deno.PointerValue<unknown>,
-        _data: Deno.PointerValue<unknown>,
-      ): void => {},
-      showDialog: (): void | Promise<void> => {},
-    },
-    getResult: (): GtkDialogResult => {
-      return this.#result;
-    },
-    setResult: (result: GtkDialogResult): void => {
-      this.#result = result;
-    },
-    getGtkFileDialogPtr: (): Deno.PointerValue<unknown> => {
-      return this.#gtkFileDialogPtr;
-    },
-    getCancellable: (): Deno.PointerValue<unknown> => {
-      return this.#cancellable;
-    },
-    getUnsafeCallbackPtr: (): Deno.PointerValue<unknown> => {
-      return this.#unsafeCallBack.pointer;
-    },
-  };
-
   get acceptLabel(): string {
     return this.#options.acceptLabel;
   }
@@ -302,4 +276,33 @@ export abstract class GtkFileDialog {
 
     this.#options.title = title;
   }
+
+  /**
+   * Internal use only
+   */
+  [GtkSymbol] = {
+    child: {
+      gAsyncReadyCallback: (
+        _sourceObject: Deno.PointerValue<unknown>,
+        _res: Deno.PointerValue<unknown>,
+        _data: Deno.PointerValue<unknown>,
+      ): void => {},
+      showDialog: (): void | Promise<void> => {},
+    },
+    getResult: (): GtkDialogResult => {
+      return this.#result;
+    },
+    setResult: (result: GtkDialogResult): void => {
+      this.#result = result;
+    },
+    getGtkFileDialogPtr: (): Deno.PointerValue<unknown> => {
+      return this.#gtkFileDialogPtr;
+    },
+    getCancellable: (): Deno.PointerValue<unknown> => {
+      return this.#cancellable;
+    },
+    getUnsafeCallbackPtr: (): Deno.PointerValue<unknown> => {
+      return this.#unsafeCallBack.pointer;
+    },
+  };
 }
