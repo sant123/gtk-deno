@@ -96,7 +96,7 @@ export abstract class GtkFileDialog {
       throw new Error(MSG_EMPTY_FILTER);
     }
 
-    const filterPtr = filter?.[GtkSymbol].getPtr() ?? null;
+    const filterPtr = filter?.[GtkSymbol].getGtkFileFilterPtr() ?? null;
 
     lib.symbols.gtk_file_dialog_set_default_filter(
       this.#gtkFileDialogPtr,
