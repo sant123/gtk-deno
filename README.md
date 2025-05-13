@@ -65,7 +65,8 @@ Gtk4 uses Meson and Ninja for building:
 meson setup builddir -Dbuildtype=release -Dprefix=/gtk4
 ```
 
-This will take some time as it resolves dependencies found on your machine or wrap files.
+This will take some time as it resolves dependencies found on your machine or
+wrap files.
 
 Compile the project:
 
@@ -81,7 +82,8 @@ Install the compiled files:
 meson install -C builddir --destdir=$(pwd)/../..
 ```
 
-After installing, you should now have a `gtk4/` folder at the root of this repository.
+After installing, you should now have a `gtk4/` folder at the root of this
+repository.
 
 Go back to the project root:
 

@@ -1,12 +1,8 @@
-import { getPtrFromString } from "utils";
+import { getPtrFromString, GtkSymbol } from "utils";
 import { lib } from "lib";
 import { ref, unref } from "loop";
 import { GtkDialogResult, type GtkFileDialogOptions } from "./misc/types.ts";
-
-import {
-  type GtkFileFilter,
-  GtkFileFilterSymbol,
-} from "../GtkFileFilter/GtkFileFilter.ts";
+import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 
 const MSG_EMPTY_FILTER =
   "GtkFileDialog received an empty GtkFileFilter. This is discouraged.";
@@ -103,13 +99,13 @@ export abstract class GtkFileDialog {
    * @param filter The file filter.
    */
   setDefaultFilter(filter: GtkFileFilter | null) {
-    const isEmpty = filter?.[GtkFileFilterSymbol].isEmpty();
+    const isEmpty = filter?.[GtkSymbol].isEmpty();
 
     if (isEmpty) {
       throw new Error(MSG_EMPTY_FILTER);
     }
 
-    const filterPtr = filter?.[GtkFileFilterSymbol].getPtr() ?? null;
+    const filterPtr = filter?.[GtkSymbol].getPtr() ?? null;
 
     lib.symbols.gtk_file_dialog_set_default_filter(
       this.gtkFileDialogPtr,

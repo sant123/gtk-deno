@@ -1,6 +1,8 @@
 import type { GError } from "types";
 import { lib } from "lib";
 
+export const GtkSymbol = Symbol("GtkSymbol");
+
 export function getGErrorFromDoublePtr(
   ptr: Deno.PointerValue<unknown>,
 ): GError | null {
