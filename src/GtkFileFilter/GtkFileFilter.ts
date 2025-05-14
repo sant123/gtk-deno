@@ -1,7 +1,5 @@
 import { lib } from "lib";
-import { getPtrFromString } from "utils";
-
-export const GtkFileFilterSymbol = Symbol("GtkFileFilter");
+import { getPtrFromString, GtkSymbol } from "utils";
 
 export class GtkFileFilter {
   #gtkFileFilterPtr: Deno.PointerValue<unknown> = null;
@@ -110,8 +108,8 @@ export class GtkFileFilter {
   /**
    * Internal use only
    */
-  [GtkFileFilterSymbol] = {
-    getPtr: (): Deno.PointerValue<unknown> => {
+  [GtkSymbol] = {
+    getGtkFileFilterPtr: (): Deno.PointerValue<unknown> => {
       return this.#gtkFileFilterPtr;
     },
     isEmpty: (): boolean => {

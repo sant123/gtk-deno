@@ -1,4 +1,4 @@
-import { getFileNameFromGFile, getGErrorFromDoublePtr } from "utils";
+import { getFileNameFromGFile, getGErrorFromDoublePtr, GtkSymbol } from "utils";
 import { lib } from "lib";
 
 import { getDialogResultFromGError } from "./misc/utils.ts";
@@ -8,7 +8,17 @@ import { GtkFileDialog } from "./GtkFileDialog.ts";
 export class GtkOpenFileDialog extends GtkFileDialog {
   #fileName = "";
 
-  protected override gAsyncReadyCallback(
+  constructor() {
+    super();
+
+    this[GtkSymbol].child
+      .gAsyncReadyCallback = this.#gAsyncReadyCallback.bind(this);
+
+    this[GtkSymbol].child
+      .showDialog = this.#showDialog.bind(this);
+  }
+
+  #gAsyncReadyCallback(
     sourceObject: Deno.PointerValue<unknown>,
     res: Deno.PointerValue<unknown>,
   ): void {
@@ -25,19 +35,19 @@ export class GtkOpenFileDialog extends GtkFileDialog {
     );
 
     const error = getGErrorFromDoublePtr(errorPtr);
-    this.result = getDialogResultFromGError(error);
+    this[GtkSymbol].setResult(getDialogResultFromGError(error));
 
-    if (this.result === GtkDialogResult.OK) {
+    if (this[GtkSymbol].getResult() === GtkDialogResult.OK) {
       this.#fileName = getFileNameFromGFile(gFilePtr);
     }
   }
 
-  protected override _showDialog(): void {
+  #showDialog(): void {
     lib.symbols.gtk_file_dialog_open(
-      this.gtkFileDialogPtr,
+      this[GtkSymbol].getGtkFileDialogPtr(),
       null,
-      this.cancellable,
-      this.unsafeCallBack.pointer,
+      this[GtkSymbol].getCancellable(),
+      this[GtkSymbol].getUnsafeCallbackPtr(),
       null,
     );
   }
