@@ -15,4 +15,8 @@ export const GtkFileFilter = {
     parameters: ["pointer", "pointer"],
     result: "void",
   },
+  gtk_file_filter_get_type: {
+    parameters: [],
+    result: "u64",
+  },
 } satisfies Deno.ForeignLibraryInterface;
