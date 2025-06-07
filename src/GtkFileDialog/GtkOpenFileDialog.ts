@@ -23,7 +23,7 @@ export class GtkOpenFileDialog extends GtkFileDialog {
     res: Deno.PointerValue<unknown>,
   ): void {
     this.#fileName = "";
-    const errorPtr = Deno.UnsafePointer.of(new Uint8Array(8));
+    const errorPtr = Deno.UnsafePointer.of(new BigUint64Array(1));
 
     /**
      * @pointer GFile
