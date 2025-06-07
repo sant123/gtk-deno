@@ -4,12 +4,12 @@ import { ref, unref } from "loop";
 import { GtkDialogResult, type GtkFileDialogOptions } from "./misc/types.ts";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 
-const MSG_EMPTY_FILTER =
-  "GtkFileDialog received an empty GtkFileFilter. This is discouraged.";
+const EMPTY_DEFAULT_FILTER = "Default filter is empty.";
 
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
   #cancellable: Deno.PointerValue<unknown> = null;
+  #defaultFilter: GtkFileFilter | null = null;
   #gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
   #isDisposed = false;
   #queue: Promise<void> = Promise.resolve();
@@ -42,6 +42,14 @@ export abstract class GtkFileDialog {
     ref(this);
   }
 
+  #checkFilters(): void {
+    const isEmpty = this.#defaultFilter?.[GtkSymbol].isEmpty();
+
+    if (isEmpty) {
+      throw new Error(EMPTY_DEFAULT_FILTER);
+    }
+  }
+
   #handleGAsyncReadyCallback(
     sourceObject: Deno.PointerValue<unknown>,
     res: Deno.PointerValue<unknown>,
@@ -67,6 +75,8 @@ export abstract class GtkFileDialog {
       return GtkDialogResult.Abort;
     }
 
+    this.#checkFilters();
+
     this.#queue = this.#queue.then(async () => {
       /**
        * @pointer GCancellable
@@ -90,18 +100,14 @@ export abstract class GtkFileDialog {
    * @param filter The file filter.
    */
   setDefaultFilter(filter: GtkFileFilter | null) {
-    const isEmpty = filter?.[GtkSymbol].isEmpty();
-
-    if (isEmpty) {
-      throw new Error(MSG_EMPTY_FILTER);
-    }
-
     const filterPtr = filter?.[GtkSymbol].getGtkFileFilterPtr() ?? null;
 
     lib.symbols.gtk_file_dialog_set_default_filter(
       this.#gtkFileDialogPtr,
       filterPtr,
     );
+
+    this.#defaultFilter = filter;
   }
 
   dispose(): void {
