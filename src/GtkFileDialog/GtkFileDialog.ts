@@ -168,16 +168,22 @@ export abstract class GtkFileDialog {
   setFilters(...filters: GtkFileFilter[]): void {
     this.#initializeGListStore();
 
-    if (this.#filters.length) {
-      lib.symbols.g_list_store_remove_all(this.#listStorePtr);
-      this.#filters = [];
+    const ptrArray = new BigUint64Array(filters.length);
+
+    for (let i = 0; i < filters.length; i++) {
+      const ptr = filters[i][GtkSymbol].getGtkFileFilterPtr();
+      ptrArray[i] = Deno.UnsafePointer.value(ptr);
     }
 
-    for (const filter of filters) {
-      const filterPtr = filter[GtkSymbol].getGtkFileFilterPtr();
-      lib.symbols.g_list_store_append(this.#listStorePtr, filterPtr);
-      this.#filters.push(filter);
-    }
+    lib.symbols.g_list_store_splice(
+      this.#listStorePtr,
+      0,
+      this.#filters.length,
+      Deno.UnsafePointer.of(ptrArray),
+      filters.length,
+    );
+
+    this.#filters = [...filters];
   }
 
   dispose(): void {
