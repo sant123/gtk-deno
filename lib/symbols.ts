@@ -1,6 +1,7 @@
 import { GioCancellable } from "./modules/Gio.Cancellable.ts";
 import { GioFile } from "./modules/Gio.File.ts";
 import { GioListModel } from "./modules/Gio.ListModel.ts";
+import { GioListStore } from "./modules/Gio.ListStore.ts";
 import { GLib } from "./modules/GLib.ts";
 import { GLibError } from "./modules/GLib.Error.ts";
 import { GLibMainContext } from "./modules/GLib.MainContext.ts";
@@ -13,6 +14,7 @@ export const symbols = {
   ...GioCancellable,
   ...GioFile,
   ...GioListModel,
+  ...GioListStore,
   ...GLib,
   ...GLibError,
   ...GLibMainContext,

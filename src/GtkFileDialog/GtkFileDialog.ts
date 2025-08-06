@@ -5,13 +5,16 @@ import { GtkDialogResult, type GtkFileDialogOptions } from "./misc/types.ts";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 
 const EMPTY_DEFAULT_FILTER = "Default filter is empty.";
+const EMPTY_FILTERS = "There is an empty filter";
 
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
   #cancellable: Deno.PointerValue<unknown> = null;
   #defaultFilter: GtkFileFilter | null = null;
+  #filters: GtkFileFilter[] = [];
   #gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
   #isDisposed = false;
+  #listStorePtr: Deno.PointerValue<unknown> = null;
   #queue: Promise<void> = Promise.resolve();
   #result = GtkDialogResult.None;
 
@@ -43,11 +46,37 @@ export abstract class GtkFileDialog {
   }
 
   #checkFilters(): void {
-    const isEmpty = this.#defaultFilter?.[GtkSymbol].isEmpty();
+    const isDefaultFilterEmpty = this.#defaultFilter?.[GtkSymbol].isEmpty();
 
-    if (isEmpty) {
+    if (isDefaultFilterEmpty) {
       throw new Error(EMPTY_DEFAULT_FILTER);
     }
+
+    const someFilterIsEmpty = this.#filters.some((filter) =>
+      filter[GtkSymbol].isEmpty()
+    );
+
+    if (someFilterIsEmpty) {
+      throw new Error(EMPTY_FILTERS);
+    }
+  }
+
+  #initializeGListStore(): void {
+    if (this.#listStorePtr) {
+      return;
+    }
+
+    const gtkFilterType = lib.symbols.gtk_file_filter_get_type();
+
+    /**
+     * @pointer GListStore
+     */
+    this.#listStorePtr = lib.symbols.g_list_store_new(gtkFilterType);
+
+    lib.symbols.gtk_file_dialog_set_filters(
+      this.#gtkFileDialogPtr,
+      this.#listStorePtr,
+    );
   }
 
   #handleGAsyncReadyCallback(
@@ -110,6 +139,27 @@ export abstract class GtkFileDialog {
     this.#defaultFilter = filter;
   }
 
+  /**
+   * Sets the filters that will be offered to the user in the file chooser dialog.
+   *
+   * Available since: 4.10
+   * @param filters A params file filter
+   */
+  setFilters(...filters: GtkFileFilter[]) {
+    this.#initializeGListStore();
+
+    if (this.#filters.length) {
+      lib.symbols.g_list_store_remove_all(this.#listStorePtr);
+      this.#filters = [];
+    }
+
+    for (const filter of filters) {
+      const filterPtr = filter[GtkSymbol].getGtkFileFilterPtr();
+      lib.symbols.g_list_store_append(this.#listStorePtr, filterPtr);
+      this.#filters.push(filter);
+    }
+  }
+
   dispose(): void {
     this[Symbol.dispose]();
   }
@@ -122,6 +172,13 @@ export abstract class GtkFileDialog {
     if (this.#cancellable) {
       lib.symbols.g_cancellable_cancel(this.#cancellable);
       lib.symbols.g_main_context_iteration(null, true);
+    }
+
+    if (this.#listStorePtr) {
+      /**
+       * @release GListStore
+       */
+      lib.symbols.g_object_unref(this.#listStorePtr);
     }
 
     this.#unsafeCallBack.close();
