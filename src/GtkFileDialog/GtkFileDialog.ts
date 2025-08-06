@@ -6,7 +6,8 @@ import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 
 const EMPTY_DEFAULT_FILTER = "Default filter is empty.";
 const EMPTY_FILTERS = "There is an empty filter.";
-const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS = "Default filter must exists in filters.";
+const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS =
+  "Default filter must exists in filters.";
 
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
@@ -110,6 +111,17 @@ export abstract class GtkFileDialog {
     this.#callBackResult?.resolve();
   }
 
+  /**
+   * Incremental use of `instance.setFilters()`. Adds one filter at the end of the filters list.
+   * @param filter The file filter.
+   */
+  addFilter(filter: GtkFileFilter): void {
+    this.#initializeGListStore();
+    const filterPtr = filter[GtkSymbol].getGtkFileFilterPtr();
+    lib.symbols.g_list_store_append(this.#listStorePtr, filterPtr);
+    this.#filters.push(filter);
+  }
+
   async showDialog(): Promise<GtkDialogResult> {
     if (this.#isDisposed) {
       return GtkDialogResult.Abort;
@@ -139,7 +151,7 @@ export abstract class GtkFileDialog {
    * Available since: 4.10
    * @param filter The file filter.
    */
-  setDefaultFilter(filter: GtkFileFilter | null) {
+  setDefaultFilter(filter: GtkFileFilter | null): void {
     const filterPtr = filter?.[GtkSymbol].getGtkFileFilterPtr() ?? null;
 
     lib.symbols.gtk_file_dialog_set_default_filter(
@@ -156,7 +168,7 @@ export abstract class GtkFileDialog {
    * Available since: 4.10
    * @param filters A params file filter
    */
-  setFilters(...filters: GtkFileFilter[]) {
+  setFilters(...filters: GtkFileFilter[]): void {
     this.#initializeGListStore();
 
     if (this.#filters.length) {
