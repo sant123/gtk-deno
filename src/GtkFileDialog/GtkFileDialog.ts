@@ -4,10 +4,10 @@ import { ref, unref } from "loop";
 import { GtkDialogResult, type GtkFileDialogOptions } from "./misc/types.ts";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 
-const EMPTY_DEFAULT_FILTER = "Default filter is empty.";
-const EMPTY_FILTERS = "There is an empty filter.";
-const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS =
-  "Default filter must exists in filters.";
+export const EMPTY_DEFAULT_FILTER = "Default file filter is empty.";
+export const EMPTY_FILTERS = "One or more filters in setFilters() is empty.";
+export const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS =
+  "The default filter must be present in the filter list.";
 
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
@@ -62,14 +62,11 @@ export abstract class GtkFileDialog {
       throw new Error(EMPTY_FILTERS);
     }
 
-    if (this.#defaultFilter && this.#filters.length) {
-      const existsDefaultFilterInFilters = this.#filters.find((filter) =>
-        filter === this.#defaultFilter
-      );
-
-      if (!existsDefaultFilterInFilters) {
-        throw new Error(DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS);
-      }
+    if (
+      this.#defaultFilter && this.#filters.length &&
+      !this.#filters.includes(this.#defaultFilter)
+    ) {
+      throw new Error(DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS);
     }
   }
 
