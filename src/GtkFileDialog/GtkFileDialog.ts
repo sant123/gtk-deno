@@ -4,14 +4,19 @@ import { ref, unref } from "loop";
 import { GtkDialogResult, type GtkFileDialogOptions } from "./misc/types.ts";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 
-const EMPTY_DEFAULT_FILTER = "Default filter is empty.";
+export const EMPTY_DEFAULT_FILTER = "Default file filter is empty.";
+export const EMPTY_FILTERS = "One or more filters in setFilters() is empty.";
+export const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS =
+  "The default filter must be present in the filter list.";
 
 export abstract class GtkFileDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
   #cancellable: Deno.PointerValue<unknown> = null;
   #defaultFilter: GtkFileFilter | null = null;
+  #filters: GtkFileFilter[] = [];
   #gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
   #isDisposed = false;
+  #listStorePtr: Deno.PointerValue<unknown> = null;
   #queue: Promise<void> = Promise.resolve();
   #result = GtkDialogResult.None;
 
@@ -43,11 +48,44 @@ export abstract class GtkFileDialog {
   }
 
   #checkFilters(): void {
-    const isEmpty = this.#defaultFilter?.[GtkSymbol].isEmpty();
+    const isDefaultFilterEmpty = this.#defaultFilter?.[GtkSymbol].isEmpty();
 
-    if (isEmpty) {
+    if (isDefaultFilterEmpty) {
       throw new Error(EMPTY_DEFAULT_FILTER);
     }
+
+    const someFilterIsEmpty = this.#filters.some((filter) =>
+      filter[GtkSymbol].isEmpty()
+    );
+
+    if (someFilterIsEmpty) {
+      throw new Error(EMPTY_FILTERS);
+    }
+
+    if (
+      this.#defaultFilter && this.#filters.length &&
+      !this.#filters.includes(this.#defaultFilter)
+    ) {
+      throw new Error(DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS);
+    }
+  }
+
+  #initializeGListStore(): void {
+    if (this.#listStorePtr) {
+      return;
+    }
+
+    const gtkFilterType = lib.symbols.gtk_file_filter_get_type();
+
+    /**
+     * @pointer GListStore
+     */
+    this.#listStorePtr = lib.symbols.g_list_store_new(gtkFilterType);
+
+    lib.symbols.gtk_file_dialog_set_filters(
+      this.#gtkFileDialogPtr,
+      this.#listStorePtr,
+    );
   }
 
   #handleGAsyncReadyCallback(
@@ -68,6 +106,17 @@ export abstract class GtkFileDialog {
     }
 
     this.#callBackResult?.resolve();
+  }
+
+  /**
+   * Incremental use of `instance.setFilters()`. Adds one filter at the end of the filters list.
+   * @param filter The file filter.
+   */
+  addFilter(filter: GtkFileFilter): void {
+    this.#initializeGListStore();
+    const filterPtr = filter[GtkSymbol].getGtkFileFilterPtr();
+    lib.symbols.g_list_store_append(this.#listStorePtr, filterPtr);
+    this.#filters.push(filter);
   }
 
   async showDialog(): Promise<GtkDialogResult> {
@@ -99,7 +148,7 @@ export abstract class GtkFileDialog {
    * Available since: 4.10
    * @param filter The file filter.
    */
-  setDefaultFilter(filter: GtkFileFilter | null) {
+  setDefaultFilter(filter: GtkFileFilter | null): void {
     const filterPtr = filter?.[GtkSymbol].getGtkFileFilterPtr() ?? null;
 
     lib.symbols.gtk_file_dialog_set_default_filter(
@@ -108,6 +157,33 @@ export abstract class GtkFileDialog {
     );
 
     this.#defaultFilter = filter;
+  }
+
+  /**
+   * Sets the filters that will be offered to the user in the file chooser dialog.
+   *
+   * Available since: 4.10
+   * @param filters A params file filter
+   */
+  setFilters(...filters: GtkFileFilter[]): void {
+    this.#initializeGListStore();
+
+    const ptrArray = new BigUint64Array(filters.length);
+
+    for (let i = 0; i < filters.length; i++) {
+      const ptr = filters[i][GtkSymbol].getGtkFileFilterPtr();
+      ptrArray[i] = Deno.UnsafePointer.value(ptr);
+    }
+
+    lib.symbols.g_list_store_splice(
+      this.#listStorePtr,
+      0,
+      this.#filters.length,
+      Deno.UnsafePointer.of(ptrArray),
+      filters.length,
+    );
+
+    this.#filters = [...filters];
   }
 
   dispose(): void {
@@ -122,6 +198,13 @@ export abstract class GtkFileDialog {
     if (this.#cancellable) {
       lib.symbols.g_cancellable_cancel(this.#cancellable);
       lib.symbols.g_main_context_iteration(null, true);
+    }
+
+    if (this.#listStorePtr) {
+      /**
+       * @release GListStore
+       */
+      lib.symbols.g_object_unref(this.#listStorePtr);
     }
 
     this.#unsafeCallBack.close();
