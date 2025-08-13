@@ -1,9 +1,5 @@
-import {
-  GtkDialogResult,
-  GtkOpenFileDialog,
-} from "../../src/GtkFileDialog/mod.ts";
-
-import { GtkFileFilter } from "../../src/GtkFileFilter/mod.ts";
+import { GtkDialogResult, GtkOpenFileDialog } from "@onyx/gtk/GtkFileDialog";
+import { GtkFileFilter } from "@onyx/gtk/GtkFileFilter";
 
 using dialog = new GtkOpenFileDialog();
 

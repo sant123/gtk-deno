@@ -1,7 +1,7 @@
 import {
   GtkDialogResult,
   GtkOpenMultipleFileDialog,
-} from "../../src/GtkFileDialog/mod.ts";
+} from "@onyx/gtk/GtkFileDialog";
 
 using dialog = new GtkOpenMultipleFileDialog();
 
