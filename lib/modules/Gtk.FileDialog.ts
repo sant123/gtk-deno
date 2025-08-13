@@ -35,6 +35,14 @@ export const GtkFileDialog = {
     parameters: ["pointer", "pointer", "pointer"],
     result: "pointer",
   },
+  gtk_file_dialog_select_multiple_folders: {
+    parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_select_multiple_folders_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "pointer",
+  },
   gtk_file_dialog_set_accept_label: {
     parameters: ["pointer", "pointer"],
     result: "void",

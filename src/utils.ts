@@ -33,7 +33,7 @@ export function getGErrorFromDoublePtr(
   return { domain, code, message };
 }
 
-export function getFileNameFromGFile(ptr: Deno.PointerValue<unknown>): string {
+export function getPathFromGFile(ptr: Deno.PointerValue<unknown>): string {
   if (!ptr) {
     return "";
   }

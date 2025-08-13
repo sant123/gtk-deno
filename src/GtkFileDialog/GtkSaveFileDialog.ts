@@ -1,4 +1,4 @@
-import { getFileNameFromGFile, getGErrorFromDoublePtr, GtkSymbol } from "utils";
+import { getGErrorFromDoublePtr, getPathFromGFile, GtkSymbol } from "utils";
 import { lib } from "lib";
 
 import { getDialogResultFromGError } from "./misc/utils.ts";
@@ -38,7 +38,7 @@ export class GtkSaveFileDialog extends GtkFileDialog {
     this[GtkSymbol].setResult(getDialogResultFromGError(error));
 
     if (this[GtkSymbol].getResult() === GtkDialogResult.OK) {
-      this.#fileName = getFileNameFromGFile(gFilePtr);
+      this.#fileName = getPathFromGFile(gFilePtr);
     }
   }
 
