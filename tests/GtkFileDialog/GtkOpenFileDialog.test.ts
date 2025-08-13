@@ -5,21 +5,18 @@ import * as v from "valibot";
 import {
   GtkFileDialogDefaultSchema,
   GtkFileDialogOkSchema,
-  GtkFileDialogResultSchema,
-  GtkFileDialogResultsSchema,
+  MultipleChoice,
+  SingleChoice,
 } from "./schemas.ts";
 
-import {
-  GtkDialogResult,
-  GtkOpenFileDialog,
-} from "../../src/GtkFileDialog/mod.ts";
+import { GtkDialogResult, GtkOpenFileDialog } from "@onyx/gtk/GtkFileDialog";
 
 Deno.test("GtkOpenFileDialog()", async (t) => {
   using dialog = new GtkOpenFileDialog();
   v.assert(GtkFileDialogDefaultSchema, dialog);
 
   let result = await dialog.showDialog();
-  v.assert(GtkFileDialogResultSchema, result);
+  v.assert(SingleChoice, result);
 
   await t.step("OkResult", () => {
     assert(
@@ -30,7 +27,7 @@ Deno.test("GtkOpenFileDialog()", async (t) => {
   });
 
   result = await dialog.showDialog();
-  v.assert(GtkFileDialogResultSchema, result);
+  v.assert(SingleChoice, result);
 
   await t.step("CancelResult", () => {
     assert(result === GtkDialogResult.Cancel, "You must cancel in this step!");
@@ -48,7 +45,7 @@ Deno.test("Single instance and multiple calls to showDialog() are serial", async
     dialog.showDialog(),
   ]);
 
-  v.assert(GtkFileDialogResultsSchema, results);
+  v.assert(MultipleChoice, results);
   console.log(results.map((r) => GtkDialogResult[r]));
 });
 
@@ -77,7 +74,7 @@ Deno.test("Multiple instance and multiple calls to showDialog() are parallel", a
     d3.showDialog(),
   ]);
 
-  v.assert(GtkFileDialogResultsSchema, results);
+  v.assert(MultipleChoice, results);
   console.log(results.map((r) => GtkDialogResult[r]));
 });
 
