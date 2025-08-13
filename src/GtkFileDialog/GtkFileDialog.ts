@@ -1,6 +1,5 @@
 import { getPtrFromString, GtkSymbol } from "utils";
 import { lib } from "lib";
-import type { GtkFileDialogOptions } from "./misc/types.ts";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 import { GtkBaseDialog } from "./GtkBaseDialog.ts";
 
@@ -8,6 +7,11 @@ const EMPTY_DEFAULT_FILTER = "Default file filter is empty.";
 const EMPTY_FILTERS = "One or more filters in setFilters() is empty.";
 const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS =
   "The default filter must be present in the filter list.";
+
+interface GtkFileDialogOptions {
+  initialFile: string;
+  initialName: string;
+}
 
 export abstract class GtkFileDialog extends GtkBaseDialog {
   #defaultFilter: GtkFileFilter | null = null;

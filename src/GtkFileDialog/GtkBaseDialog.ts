@@ -1,7 +1,13 @@
 import { getPtrFromString, GtkSymbol } from "utils";
 import { lib } from "lib";
 import { ref, unref } from "loop";
-import { type GtkDialogOptions, GtkDialogResult } from "./misc/types.ts";
+import { GtkDialogResult } from "./misc/types.ts";
+
+interface GtkDialogOptions {
+  acceptLabel: string;
+  initialFolder: string;
+  title: string;
+}
 
 export abstract class GtkBaseDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
