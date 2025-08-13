@@ -1,4 +1,4 @@
-import { getFileNameFromGFile, getGErrorFromDoublePtr, GtkSymbol } from "utils";
+import { getGErrorFromDoublePtr, getPathFromGFile, GtkSymbol } from "utils";
 import { lib } from "lib";
 
 import { getDialogResultFromGError } from "./misc/utils.ts";
@@ -53,7 +53,7 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
           break;
         }
 
-        const fileName = getFileNameFromGFile(gFilePtr);
+        const fileName = getPathFromGFile(gFilePtr);
         this.#fileNames.push(fileName);
       }
 
