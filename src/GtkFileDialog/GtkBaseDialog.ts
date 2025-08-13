@@ -3,7 +3,7 @@ import { lib } from "lib";
 import { ref, unref } from "loop";
 import { GtkDialogResult } from "./misc/types.ts";
 
-interface GtkDialogOptions {
+interface GtkBaseDialogOptions {
   acceptLabel: string;
   initialFolder: string;
   title: string;
@@ -17,7 +17,7 @@ export abstract class GtkBaseDialog {
   #queue: Promise<void> = Promise.resolve();
   #result = GtkDialogResult.None;
 
-  #options: GtkDialogOptions = {
+  #options: GtkBaseDialogOptions = {
     acceptLabel: "",
     initialFolder: "",
     title: "",
