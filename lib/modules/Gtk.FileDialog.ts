@@ -1,4 +1,8 @@
 export const GtkFileDialog = {
+  gtk_file_dialog_new: {
+    parameters: [],
+    result: "pointer",
+  },
   gtk_file_dialog_open: {
     parameters: ["pointer", "pointer", "pointer", "pointer", "pointer"],
     result: "void",
@@ -31,19 +35,15 @@ export const GtkFileDialog = {
     parameters: ["pointer", "pointer", "pointer"],
     result: "pointer",
   },
-  gtk_file_dialog_set_filters: {
-    parameters: ["pointer", "pointer"],
-    result: "void",
-  },
-  gtk_file_dialog_new: {
-    parameters: [],
-    result: "pointer",
-  },
   gtk_file_dialog_set_accept_label: {
     parameters: ["pointer", "pointer"],
     result: "void",
   },
   gtk_file_dialog_set_default_filter: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gtk_file_dialog_set_filters: {
     parameters: ["pointer", "pointer"],
     result: "void",
   },

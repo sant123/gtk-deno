@@ -1,8 +1,4 @@
 export const GtkFileFilter = {
-  gtk_file_filter_new: {
-    parameters: [],
-    result: "pointer",
-  },
   gtk_file_filter_add_mime_type: {
     parameters: ["pointer", "pointer"],
     result: "void",
@@ -18,5 +14,9 @@ export const GtkFileFilter = {
   gtk_file_filter_get_type: {
     parameters: [],
     result: "u64",
+  },
+  gtk_file_filter_new: {
+    parameters: [],
+    result: "pointer",
   },
 } satisfies Deno.ForeignLibraryInterface;
