@@ -5,10 +5,13 @@ export enum GtkDialogResult {
   Abort,
 }
 
-export interface GtkFileDialogOptions {
+export interface GtkDialogOptions {
   acceptLabel: string;
-  initialFile: string;
   initialFolder: string;
-  initialName: string;
   title: string;
+}
+
+export interface GtkFileDialogOptions {
+  initialFile: string;
+  initialName: string;
 }
