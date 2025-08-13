@@ -199,7 +199,7 @@ export abstract class GtkBaseDialog {
         _res: Deno.PointerValue<unknown>,
         _data: Deno.PointerValue<unknown>,
       ): void => {},
-      showDialog: (): void | Promise<void> => {},
+      showDialog: (): void => {},
     },
     isDisposed: (): boolean => {
       return this.#isDisposed;
