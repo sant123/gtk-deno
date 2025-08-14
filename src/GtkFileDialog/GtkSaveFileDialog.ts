@@ -52,6 +52,17 @@ export class GtkSaveFileDialog extends GtkFileDialog {
     );
   }
 
+  /**
+   * Presents a file chooser dialog to the user.
+   *
+   * The file chooser dialog will be save mode.
+   *
+   * Available since: 4.10
+   */
+  override showDialog(): Promise<GtkDialogResult> {
+    return super.showDialog();
+  }
+
   get fileName(): string {
     return this.#fileName;
   }

@@ -74,6 +74,17 @@ export class GtkOpenMultipleFileDialog extends GtkFileDialog {
     );
   }
 
+  /**
+   * Presents a file chooser dialog to the user.
+   * 
+   * The file chooser dialog will be set up to select multiple files.
+   * 
+   * Available since: 4.10
+   */
+  override showDialog(): Promise<GtkDialogResult> {
+    return super.showDialog();
+  }
+
   get fileNames(): string[] {
     return this.#fileNames;
   }

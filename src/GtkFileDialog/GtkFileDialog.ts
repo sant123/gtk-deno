@@ -147,7 +147,7 @@ export abstract class GtkFileDialog extends GtkBaseDialog {
   /**
    * Gets/Sets the file that will be initially selected in the file chooser dialog.
    *
-   * This function is a shortcut for calling both `initialFolder` and `initialName` with the directory and name of file, respectively.
+   * This function is a shortcut for calling both `initialFolder` and `initialName` with the directory and name of `file`, respectively.
    *
    * Available since: 4.10
    */
