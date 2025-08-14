@@ -84,7 +84,7 @@ export abstract class GtkBaseDialog {
   }
 
   /**
-   * Release all pointers attached to this class. The `using` keyword call this method automatically.
+   * Release all attached pointers. The `using` keyword call this method automatically.
    */
   dispose(): void {
     this[Symbol.dispose]();
