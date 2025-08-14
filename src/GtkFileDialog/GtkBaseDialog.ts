@@ -4,7 +4,7 @@ import { ref, unref } from "loop";
 import { GtkDialogResult } from "./misc/types.ts";
 
 interface GtkBaseDialogOptions {
-  acceptLabel: string;
+  acceptLabel: string | null;
   initialFolder: string;
   title: string;
 }
@@ -75,7 +75,7 @@ export abstract class GtkBaseDialog {
        */
       this.#cancellable = lib.symbols.g_cancellable_new();
       this.#callBackResult = Promise.withResolvers();
-      await this[GtkSymbol].child.showDialog();
+      this[GtkSymbol].child.showDialog();
       await this.#callBackResult.promise;
     });
 
@@ -83,6 +83,9 @@ export abstract class GtkBaseDialog {
     return this.#result;
   }
 
+  /**
+   * Release all attached pointers. The `using` keyword call this method automatically.
+   */
   dispose(): void {
     this[Symbol.dispose]();
   }
@@ -109,23 +112,25 @@ export abstract class GtkBaseDialog {
     unref(this);
   }
 
-  get acceptLabel(): string {
+  get acceptLabel(): string | null {
     return this.#options.acceptLabel;
   }
 
   /**
    * Gets/Sets the label shown on the file chooser’s accept button.
    *
-   * Leaving the accept label unset will fall back to a default label, depending on what API is used to launch the file dialog.
+   * Leaving the accept label unset or setting it as `null` will fall back to a default label, depending on what API is used to launch the file dialog.
    *
    * Available since: 4.10
    */
-  set acceptLabel(acceptLabel: string) {
+  set acceptLabel(acceptLabel: string | null) {
     if (this.#isDisposed) {
       return;
     }
 
-    const stringPtr = getPtrFromString(acceptLabel);
+    const stringPtr = acceptLabel == null
+      ? null
+      : getPtrFromString(acceptLabel);
 
     lib.symbols.gtk_file_dialog_set_accept_label(
       this.#gtkFileDialogPtr,
@@ -149,12 +154,14 @@ export abstract class GtkBaseDialog {
       return;
     }
 
-    const stringPtr = getPtrFromString(initialFolder);
+    const stringPtr = !initialFolder ? null : getPtrFromString(initialFolder);
 
     /**
      * @pointer GFile
      */
-    const gFilePtr = lib.symbols.g_file_new_for_path(stringPtr);
+    const gFilePtr = !stringPtr
+      ? null
+      : lib.symbols.g_file_new_for_path(stringPtr);
 
     lib.symbols.gtk_file_dialog_set_initial_folder(
       this.#gtkFileDialogPtr,
@@ -164,7 +171,7 @@ export abstract class GtkBaseDialog {
     /**
      * @release GFile
      */
-    lib.symbols.g_object_unref(gFilePtr);
+    !!gFilePtr && lib.symbols.g_object_unref(gFilePtr);
 
     this.#options.initialFolder = initialFolder;
   }

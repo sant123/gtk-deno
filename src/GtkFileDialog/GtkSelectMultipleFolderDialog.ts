@@ -75,6 +75,17 @@ export class GtkSelectMultipleFolderDialog extends GtkBaseDialog {
     );
   }
 
+  /**
+   * Presents a file chooser dialog to the user.
+   *
+   * The file chooser dialog will be set up to allow selecting multiple folders.
+   *
+   * Available since: 4.10
+   */
+  override showDialog(): Promise<GtkDialogResult> {
+    return super.showDialog();
+  }
+
   get selectedPaths(): string[] {
     return this.#selectedPaths;
   }

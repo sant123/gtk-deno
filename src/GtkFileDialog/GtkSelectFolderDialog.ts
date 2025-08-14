@@ -52,6 +52,17 @@ export class GtkSelectFolderDialog extends GtkBaseDialog {
     );
   }
 
+  /**
+   * Presents a file chooser dialog to the user.
+   *
+   * The file chooser dialog will be set up to select a single folder.
+   *
+   * Available since: 4.10
+   */
+  override showDialog(): Promise<GtkDialogResult> {
+    return super.showDialog();
+  }
+
   get selectedPath(): string {
     return this.#selectedPath;
   }
