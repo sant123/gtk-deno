@@ -40,6 +40,9 @@
     "utils": "./src/utils.ts"
   },
   "fmt": {
-    "exclude": ["third_party"]
+    "exclude": ["gtk4", "third_party"]
+  },
+  "lint": {
+    "exclude": ["gtk4", "third_party"]
   }
 }
