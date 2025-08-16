@@ -1,6 +1,6 @@
 # gtk-deno
 
-Gtk4 bindings for Deno + widgets.
+Gtk4 widget bindings for Deno.
 
 ## Install
 
@@ -23,6 +23,115 @@ You can check which version you are using by running:
 ```bash
 GTK_DEBUG= deno -E --allow-ffi src/version.ts
 ```
+
+## Usage
+
+### GtkFileDialog
+
+This module contains 5 variants for selecting a file or folder:
+
+#### GtkOpenFileDialog
+
+```ts
+import { GtkDialogResult, GtkOpenFileDialog } from "@onyx/gtk/GtkFileDialog";
+
+using dialog = new GtkOpenFileDialog();
+
+if (await dialog.showDialog() === GtkDialogResult.OK) {
+  console.log("Selected file:", dialog.fileName);
+} else {
+  console.log("No file choosen");
+}
+```
+
+#### GtkOpenMultipleFileDialog
+
+```ts
+import {
+  GtkDialogResult,
+  GtkOpenMultipleFileDialog,
+} from "@onyx/gtk/GtkFileDialog";
+
+using dialog = new GtkOpenMultipleFileDialog();
+
+if (await dialog.showDialog() === GtkDialogResult.OK) {
+  console.log("Selected files:", dialog.fileNames);
+} else {
+  console.log("No file choosen");
+}
+```
+
+#### GtkSaveFileDialog
+
+```ts
+import { GtkDialogResult, GtkSaveFileDialog } from "@onyx/gtk/GtkFileDialog";
+
+using dialog = new GtkSaveFileDialog();
+
+if (await dialog.showDialog() === GtkDialogResult.OK) {
+  console.log("Selected file:", dialog.fileName);
+} else {
+  console.log("No file choosen");
+}
+```
+
+#### GtkSelectFolderDialog
+
+```ts
+import {
+  GtkDialogResult,
+  GtkSelectFolderDialog,
+} from "@onyx/gtk/GtkFileDialog";
+
+using dialog = new GtkSelectFolderDialog();
+
+if (await dialog.showDialog() === GtkDialogResult.OK) {
+  console.log("Selected folder:", dialog.selectedPath);
+} else {
+  console.log("No folder choosen");
+}
+```
+
+#### GtkSelectMultipleFolderDialog
+
+```ts
+import {
+  GtkDialogResult,
+  GtkSelectMultipleFolderDialog,
+} from "@onyx/gtk/GtkFileDialog";
+
+using dialog = new GtkSelectMultipleFolderDialog();
+
+if (await dialog.showDialog() === GtkDialogResult.OK) {
+  console.log("Selected folders:", dialog.selectedPaths);
+} else {
+  console.log("No folder choosen");
+}
+```
+
+### GtkFileFilter
+
+This module can be used with a file dialog variant:
+
+```ts
+import { GtkDialogResult, GtkOpenFileDialog } from "@onyx/gtk/GtkFileDialog";
+import { GtkFileFilter } from "@onyx/gtk/GtkFileFilter";
+
+using dialog = new GtkOpenFileDialog();
+
+using patternJsonFilter = new GtkFileFilter();
+patternJsonFilter.addPattern("*.json");
+
+dialog.setDefaultFilter(patternJsonFilter);
+
+if (await dialog.showDialog() === GtkDialogResult.OK) {
+  console.log("Selected file:", dialog.fileName);
+} else {
+  console.log("No file choosen");
+}
+```
+
+You can see more in the `examples` folder.
 
 ## Building
 
