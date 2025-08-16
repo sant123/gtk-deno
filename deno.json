@@ -5,6 +5,7 @@
   "publish": {
     "exclude": [
       ".clang-format",
+      ".github",
       ".gitmodules",
       ".vscode",
       "examples",
