@@ -1,6 +1,9 @@
 import { lib } from "lib";
 import { getPtrFromString, GtkSymbol } from "utils";
 
+/**
+ * Filter files in GtkFileDialog
+ */
 export class GtkFileFilter {
   #gtkFileFilterPtr: Deno.PointerValue<unknown> = null;
   #isDisposed = false;
