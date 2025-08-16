@@ -5,6 +5,9 @@ import { getDialogResultFromGError } from "./misc/utils.ts";
 import { GtkDialogResult } from "./misc/types.ts";
 import { GtkFileDialog } from "./GtkFileDialog.ts";
 
+/**
+ * File chooser dialog to select multiple files
+ */
 export class GtkOpenMultipleFileDialog extends GtkFileDialog {
   #fileNames: string[] = [];
 

@@ -5,6 +5,9 @@ import { getDialogResultFromGError } from "./misc/utils.ts";
 import { GtkDialogResult } from "./misc/types.ts";
 import { GtkBaseDialog } from "./GtkBaseDialog.ts";
 
+/**
+ * File chooser dialog to allow selecting multiple folders
+ */
 export class GtkSelectMultipleFolderDialog extends GtkBaseDialog {
   #selectedPaths: string[] = [];
 
