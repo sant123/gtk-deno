@@ -18,7 +18,7 @@
       "outputCapture": "std"
     },
     {
-      "name": "(Clang++) Debug main.cc",
+      "name": "(Clang++) Debug main.c",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/bin/main",
