@@ -24,10 +24,10 @@
         "/usr/include/sysprof-6"
       ],
       "defines": [],
-      "compilerPath": "/usr/bin/clang++",
-      "cStandard": "c17",
-      "cppStandard": "c++17",
-      "intelliSenseMode": "linux-clang-x64"
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c23",
+      "cppStandard": "c++23",
+      "intelliSenseMode": "linux-gcc-x64"
     }
   ],
   "version": 4

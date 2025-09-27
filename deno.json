@@ -9,7 +9,7 @@
       ".gitmodules",
       ".vscode",
       "examples",
-      "main.cc",
+      "main.c",
       "tests",
       "third_party"
     ]
@@ -24,7 +24,7 @@
     "clean": "rm -r bin",
     "build:gtk": {
       "dependencies": ["setup:bin"],
-      "command": "clang++ -fdiagnostics-color=always $(pkg-config --cflags --libs gtk4) -g -std=c++17 -o bin/main main.cc"
+      "command": "gcc $(pkg-config --cflags --libs gtk4) -g -std=c23 -o bin/main main.c"
     },
     "start:gtk": {
       "dependencies": ["build:gtk"],
