@@ -1,12 +1,12 @@
 import { lib } from "lib";
 
-const instances = new Set<unknown>();
+const instances = new Set<bigint>();
 
 let running = false;
 let scheduled = false;
 
 let idleBackoffMs = 1;
-const MAX_BACKOFF_MS = 16; // 1000 / 16 = 62.5 Hz
+const MAX_BACKOFF_MS = 8; // 1000 / 8 = 125 Hz
 
 let spinCount = 0;
 const YIELD_EVERY = 50; // Cycles
@@ -34,7 +34,7 @@ function pump(): void {
       spinCount = 0;
       setTimeout(schedule, 0);
     } else {
-      queueMicrotask(schedule);
+      schedule();
     }
   } else {
     spinCount = 0;
@@ -71,16 +71,16 @@ function stop(): void {
   scheduled = false;
 }
 
-export function ref(instance: unknown): void {
-  instances.add(instance);
+export function ref(ptr: Deno.PointerValue<unknown>): void {
+  instances.add(Deno.UnsafePointer.value(ptr));
 
   if (instances.size === 1) {
     start();
   }
 }
 
-export function unref(instance: unknown): void {
-  instances.delete(instance);
+export function unref(ptr: Deno.PointerValue<unknown>): void {
+  instances.delete(Deno.UnsafePointer.value(ptr));
 
   if (instances.size === 0) {
     stop();
