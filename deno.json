@@ -15,7 +15,7 @@
     ]
   },
   "exports": {
-    ".": "./src/version.ts",
+    ".": "./lib/version.ts",
     "./GtkFileDialog": "./src/GtkFileDialog/mod.ts",
     "./GtkFileFilter": "./src/GtkFileFilter/mod.ts"
   },

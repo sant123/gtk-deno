@@ -1,4 +1,5 @@
 const debug = Deno.env.has("GTK_DEBUG");
+const lib = Deno.env.get("GTK_LIB");
 
 export interface GtkVersion {
   major: number;
@@ -15,11 +16,11 @@ export function getLibName(): string {
 }
 
 export function resolveGtkLibrary(): string {
-  if (Deno.env.has("GTK_LIB")) {
+  if (lib) {
     if (debug) {
-      console.log("Using GTK library from GTK_LIB:", Deno.env.get("GTK_LIB"));
+      console.log("Using GTK library from GTK_LIB:", lib);
     }
-    return Deno.env.get("GTK_LIB")!;
+    return lib;
   }
 
   const libName = getLibName();
