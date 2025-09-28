@@ -72,7 +72,13 @@ function stop(): void {
 }
 
 export function ref(ptr: Deno.PointerValue<unknown>): void {
-  instances.add(Deno.UnsafePointer.value(ptr));
+  const ptrValue = Deno.UnsafePointer.value(ptr);
+
+  if (ptrValue === 0n) {
+    return;
+  }
+
+  instances.add(ptrValue);
 
   if (instances.size === 1) {
     start();
@@ -80,7 +86,13 @@ export function ref(ptr: Deno.PointerValue<unknown>): void {
 }
 
 export function unref(ptr: Deno.PointerValue<unknown>): void {
-  instances.delete(Deno.UnsafePointer.value(ptr));
+  const ptrValue = Deno.UnsafePointer.value(ptr);
+
+  if (ptrValue === 0n) {
+    return;
+  }
+
+  instances.delete(ptrValue);
 
   if (instances.size === 0) {
     stop();
