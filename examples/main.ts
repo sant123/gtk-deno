@@ -4,9 +4,10 @@ import { ref, unref } from "loop";
 
 const onClose = new Deno.UnsafeCallback({
   parameters: ["pointer", "pointer"],
-  result: "void",
+  result: "bool",
 }, (appPtr) => {
   unref(appPtr);
+  return false;
 });
 
 const onActivate = new Deno.UnsafeCallback({
