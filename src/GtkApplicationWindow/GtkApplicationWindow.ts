@@ -60,13 +60,20 @@ export class GtkApplicationWindow {
     return false;
   }
 
-  connect<S extends Signals>(event: Signals, cb: Definitions[S]): void {
+  connect<S extends Signals>(event: S, cb: Definitions[S]): void {
     if (this.#isDisposed) {
       return;
     }
 
     const definition = ffiDefinitions[event];
-    const handler = new Deno.UnsafeCallback(definition, cb);
+
+    const handler = new Deno.UnsafeCallback(
+      definition,
+      cb as Deno.UnsafeCallbackFunction<
+        typeof definition["parameters"],
+        typeof definition["result"]
+      >,
+    );
 
     lib.symbols.g_signal_connect_data(
       this.#gtkApplicationWindowPtr,
