@@ -1,13 +1,13 @@
 export type SignalParams = {
-  activate: [Deno.PointerValue<unknown>, Deno.PointerValue<unknown>];
+  "close-request": [Deno.PointerValue<unknown>, Deno.PointerValue<unknown>];
 };
 
 export type SignalReturn = {
-  activate: void;
+  "close-request": boolean;
 };
 
 export type Signals = keyof SignalParams;
 
 export const ffiDefinitions = {
-  activate: { parameters: ["pointer", "pointer"], result: "void" },
+  "close-request": { parameters: ["pointer", "pointer"], result: "bool" },
 } as const satisfies Record<string, Deno.UnsafeCallbackDefinition>;

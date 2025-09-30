@@ -1,10 +1,17 @@
 import { getPtrFromString, GtkSymbol } from "utils";
-import { GtkConnectFlags } from "types";
+import { type Closable, GtkConnectFlags } from "types";
 import { lib } from "lib";
 import { ref, unref } from "loop";
 
 import { GTK_APPLICATION_DISPOSED } from "./GtkApplicationWindowErrors.ts";
 import type { GtkApplication } from "../GtkApplication/GtkApplication.ts";
+
+import {
+  ffiDefinitions,
+  type SignalParams,
+  type SignalReturn,
+  type Signals,
+} from "./events.ts";
 
 interface GtkApplicationWindowOptions {
   title: string | null;
@@ -16,16 +23,14 @@ interface GtkApplicationWindowOptions {
 export class GtkApplicationWindow {
   #app: GtkApplication;
   #gtkApplicationWindowPtr: Deno.PointerValue<unknown> = null;
+  #handlers: Closable[] = [];
   #hasClosed = false;
   #isDisposed = false;
 
-  #unsafeCloseRequestCallBack: Deno.UnsafeCallback<{
-    readonly parameters: readonly ["pointer", "pointer", "pointer"];
-    readonly result: "void";
-  }> = new Deno.UnsafeCallback({
-    parameters: ["pointer", "pointer", "pointer"],
-    result: "void",
-  }, this.#handleCloseRequestCallback.bind(this));
+  #unsafeCloseRequestCallBack = new Deno.UnsafeCallback(
+    ffiDefinitions["close-request"],
+    this.#handleCloseRequestCallback.bind(this),
+  );
 
   #options: GtkApplicationWindowOptions = {
     title: null,
@@ -55,12 +60,37 @@ export class GtkApplicationWindow {
     ref(this.#gtkApplicationWindowPtr);
   }
 
-  #handleCloseRequestCallback() {
+  #handleCloseRequestCallback(): boolean {
     this.#hasClosed = true;
 
     setTimeout(() => {
       this.dispose();
     });
+
+    return false;
+  }
+
+  connect<S extends Signals>(
+    event: Signals,
+    cb: (...args: SignalParams[S]) => SignalReturn[S],
+  ): void {
+    if (this.#isDisposed) {
+      return;
+    }
+
+    const definition = ffiDefinitions[event];
+    const handler = new Deno.UnsafeCallback(definition, cb);
+
+    lib.symbols.g_signal_connect_data(
+      this.#gtkApplicationWindowPtr,
+      getPtrFromString(event),
+      handler.pointer,
+      null,
+      null,
+      GtkConnectFlags.G_CONNECT_DEFAULT,
+    );
+
+    this.#handlers.push(handler);
   }
 
   /**
@@ -161,6 +191,11 @@ export class GtkApplicationWindow {
 
     this.#unsafeCloseRequestCallBack.close();
     unref(this.#gtkApplicationWindowPtr);
+
+    for (const handler of this.#handlers) {
+      handler.close();
+    }
+
     this.#isDisposed = true;
   }
 }
