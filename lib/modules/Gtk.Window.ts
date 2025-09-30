@@ -1,4 +1,12 @@
 export const GtkWindow = {
+  gtk_window_close: {
+    parameters: ["pointer"],
+    result: "void",
+  },
+  gtk_window_destroy: {
+    parameters: ["pointer"],
+    result: "void",
+  },
   gtk_window_present: {
     parameters: ["pointer"],
     result: "void",
