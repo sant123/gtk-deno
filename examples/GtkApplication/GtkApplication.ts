@@ -2,7 +2,7 @@ import { GtkApplication, GtkApplicationFlags } from "@onyx/gtk/GtkApplication";
 import { GtkApplicationWindow } from "@onyx/gtk/GtkApplicationWindow";
 
 const app = new GtkApplication(
-  "org.gtk.example",
+  "org.gtk.example.deno",
   GtkApplicationFlags.G_APPLICATION_DEFAULT_FLAGS,
 );
 
