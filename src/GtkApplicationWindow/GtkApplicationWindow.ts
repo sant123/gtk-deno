@@ -56,11 +56,7 @@ export class GtkApplicationWindow {
 
   #handleCloseRequestCallback(): boolean {
     this.#hasClosed = true;
-
-    setTimeout(() => {
-      this.dispose();
-    });
-
+    this.dispose();
     return false;
   }
 
@@ -180,12 +176,12 @@ export class GtkApplicationWindow {
       lib.symbols.gtk_window_destroy(this.#gtkApplicationWindowPtr);
     }
 
-    this.#unsafeCloseRequestCallBack.close();
     unref(this.#gtkApplicationWindowPtr);
 
-    for (const handler of this.#handlers) {
-      handler.close();
-    }
+    setTimeout(() => {
+      this.#unsafeCloseRequestCallBack.close();
+      this.#handlers.forEach((handler) => handler.close());
+    });
 
     this.#isDisposed = true;
   }

@@ -67,9 +67,9 @@ export class GtkApplication {
      */
     lib.symbols.g_object_unref(this.#gtkApplicationPtr);
 
-    for (const handler of this.#handlers) {
-      handler.close();
-    }
+    setTimeout(() => {
+      this.#handlers.forEach((handler) => handler.close());
+    });
 
     this.#isDisposed = true;
   }
