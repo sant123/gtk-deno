@@ -1,7 +1,10 @@
 import type { CallbackFromDef } from "signal";
 
 export const ffiDefinitions = {
-  "close-request": { parameters: ["pointer", "pointer"], result: "bool" },
+  "close-request": {
+    parameters: ["pointer", "pointer"],
+    result: "bool",
+  },
 } as const;
 
 export type Signals = keyof typeof ffiDefinitions;
