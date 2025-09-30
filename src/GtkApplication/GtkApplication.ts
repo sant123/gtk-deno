@@ -1,16 +1,17 @@
 import { getPtrFromString, GtkSymbol } from "utils";
 import { lib } from "lib";
-import { type Closable, GtkConnectFlags } from "types";
+import { Signal } from "signal";
 
-import type { GtkApplicationFlags } from "./GtkApplicationFlags.ts";
 import { type Definitions, ffiDefinitions, type Signals } from "./events.ts";
+import type { GtkApplicationFlags } from "./GtkApplicationFlags.ts";
 
-export class GtkApplication {
-  #handlers: Closable[] = [];
-  #gtkApplicationPtr: Deno.PointerValue<unknown> = null;
+export class GtkApplication extends Signal<typeof ffiDefinitions> {
+  #gtkApplicationPtr: Deno.PointerValue = null;
   #isDisposed = false;
 
   constructor(applicationId: string, flags: GtkApplicationFlags) {
+    super();
+
     /**
      * @pointer GtkApplication
      */
@@ -22,31 +23,12 @@ export class GtkApplication {
     lib.symbols.g_application_register(this.#gtkApplicationPtr, null, null);
   }
 
-  connect<S extends Signals>(event: S, cb: Definitions[S]): void {
+  override connect<S extends Signals>(event: S, cb: Definitions[S]): void {
     if (this.#isDisposed) {
       return;
     }
 
-    const definition = ffiDefinitions[event];
-
-    const handler = new Deno.UnsafeCallback(
-      definition,
-      cb as Deno.UnsafeCallbackFunction<
-        typeof definition["parameters"],
-        typeof definition["result"]
-      >,
-    );
-
-    lib.symbols.g_signal_connect_data(
-      this.#gtkApplicationPtr,
-      getPtrFromString(event),
-      handler.pointer,
-      null,
-      null,
-      GtkConnectFlags.G_CONNECT_DEFAULT,
-    );
-
-    this.#handlers.push(handler);
+    super.connect(event, cb, this.#gtkApplicationPtr, ffiDefinitions[event]);
   }
 
   run(): void {
@@ -60,11 +42,7 @@ export class GtkApplication {
   /**
    * Release all attached pointers. The `using` keyword call this method automatically.
    */
-  dispose(): void {
-    this[Symbol.dispose]();
-  }
-
-  [Symbol.dispose](): void {
+  override dispose(): void {
     if (this.#isDisposed) {
       return;
     }
@@ -73,12 +51,12 @@ export class GtkApplication {
      * @release GtkApplication
      */
     lib.symbols.g_object_unref(this.#gtkApplicationPtr);
-
-    setTimeout(() => {
-      this.#handlers.forEach((handler) => handler.close());
-    });
-
+    super.dispose();
     this.#isDisposed = true;
+  }
+
+  [Symbol.dispose](): void {
+    this.dispose();
   }
 
   [GtkSymbol] = {

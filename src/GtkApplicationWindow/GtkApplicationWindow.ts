@@ -1,5 +1,5 @@
 import { getPtrFromString, GtkSymbol } from "utils";
-import { type Closable, GtkConnectFlags } from "types";
+import { GtkConnectFlags, Signal } from "signal";
 import { lib } from "lib";
 import { ref, unref } from "loop";
 
@@ -14,10 +14,9 @@ interface GtkApplicationWindowOptions {
 /**
  * A `GtkWindow` subclass that integrates with `GtkApplication`.
  */
-export class GtkApplicationWindow {
+export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
   #app: GtkApplication;
-  #gtkApplicationWindowPtr: Deno.PointerValue<unknown> = null;
-  #handlers: Closable[] = [];
+  #gtkApplicationWindowPtr: Deno.PointerValue = null;
   #hasClosed = false;
   #isDisposed = false;
 
@@ -31,6 +30,8 @@ export class GtkApplicationWindow {
   };
 
   constructor(app: GtkApplication) {
+    super();
+
     if (app[GtkSymbol].isDisposed()) {
       console.trace(GTK_APPLICATION_DISPOSED);
       throw new Error(GTK_APPLICATION_DISPOSED);
@@ -60,31 +61,17 @@ export class GtkApplicationWindow {
     return false;
   }
 
-  connect<S extends Signals>(event: S, cb: Definitions[S]): void {
+  override connect<S extends Signals>(event: S, cb: Definitions[S]): void {
     if (this.#isDisposed) {
       return;
     }
 
-    const definition = ffiDefinitions[event];
-
-    const handler = new Deno.UnsafeCallback(
-      definition,
-      cb as Deno.UnsafeCallbackFunction<
-        typeof definition["parameters"],
-        typeof definition["result"]
-      >,
-    );
-
-    lib.symbols.g_signal_connect_data(
+    super.connect(
+      event,
+      cb,
       this.#gtkApplicationWindowPtr,
-      getPtrFromString(event),
-      handler.pointer,
-      null,
-      null,
-      GtkConnectFlags.G_CONNECT_DEFAULT,
+      ffiDefinitions[event],
     );
-
-    this.#handlers.push(handler);
   }
 
   /**
@@ -105,8 +92,23 @@ export class GtkApplicationWindow {
   /**
    * Release all attached pointers. The `using` keyword call this method automatically.
    */
-  dispose(): void {
-    this[Symbol.dispose]();
+  override dispose(): void {
+    if (this.#isDisposed) {
+      return;
+    }
+
+    if (!this.#hasClosed) {
+      lib.symbols.gtk_window_destroy(this.#gtkApplicationWindowPtr);
+    }
+
+    unref(this.#gtkApplicationWindowPtr);
+
+    setTimeout(() => {
+      this.#unsafeCloseRequestCallBack.close();
+    });
+
+    super.dispose();
+    this.#isDisposed = true;
   }
 
   /**
@@ -175,21 +177,6 @@ export class GtkApplicationWindow {
   }
 
   [Symbol.dispose](): void {
-    if (this.#isDisposed) {
-      return;
-    }
-
-    if (!this.#hasClosed) {
-      lib.symbols.gtk_window_destroy(this.#gtkApplicationWindowPtr);
-    }
-
-    unref(this.#gtkApplicationWindowPtr);
-
-    setTimeout(() => {
-      this.#unsafeCloseRequestCallBack.close();
-      this.#handlers.forEach((handler) => handler.close());
-    });
-
-    this.#isDisposed = true;
+    this.dispose();
   }
 }

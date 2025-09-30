@@ -1,8 +1,11 @@
-import type { CallbacksFromDefs } from "types";
+import type { CallbackFromDef } from "signal";
 
 export const ffiDefinitions = {
   "close-request": { parameters: ["pointer", "pointer"], result: "bool" },
-} as const satisfies Record<string, Deno.UnsafeCallbackDefinition>;
+} as const;
 
 export type Signals = keyof typeof ffiDefinitions;
-export type Definitions = CallbacksFromDefs<typeof ffiDefinitions>;
+
+export type Definitions = {
+  [K in Signals]: CallbackFromDef<typeof ffiDefinitions[K]>;
+};
