@@ -3,13 +3,7 @@ import { lib } from "lib";
 import { type Closable, GtkConnectFlags } from "types";
 
 import type { GtkApplicationFlags } from "./GtkApplicationFlags.ts";
-
-import {
-  ffiDefinitions,
-  type SignalParams,
-  type SignalReturn,
-  type Signals,
-} from "./events.ts";
+import { type Definitions, ffiDefinitions, type Signals } from "./events.ts";
 
 export class GtkApplication {
   #handlers: Closable[] = [];
@@ -28,10 +22,7 @@ export class GtkApplication {
     lib.symbols.g_application_register(this.#gtkApplicationPtr, null, null);
   }
 
-  connect<S extends Signals>(
-    event: Signals,
-    cb: (...args: SignalParams[S]) => SignalReturn[S],
-  ): void {
+  connect<S extends Signals>(event: Signals, cb: Definitions[S]): void {
     if (this.#isDisposed) {
       return;
     }

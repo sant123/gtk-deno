@@ -4,14 +4,8 @@ import { lib } from "lib";
 import { ref, unref } from "loop";
 
 import { GTK_APPLICATION_DISPOSED } from "./GtkApplicationWindowErrors.ts";
+import { type Definitions, ffiDefinitions, type Signals } from "./events.ts";
 import type { GtkApplication } from "../GtkApplication/GtkApplication.ts";
-
-import {
-  ffiDefinitions,
-  type SignalParams,
-  type SignalReturn,
-  type Signals,
-} from "./events.ts";
 
 interface GtkApplicationWindowOptions {
   title: string | null;
@@ -70,10 +64,7 @@ export class GtkApplicationWindow {
     return false;
   }
 
-  connect<S extends Signals>(
-    event: Signals,
-    cb: (...args: SignalParams[S]) => SignalReturn[S],
-  ): void {
+  connect<S extends Signals>(event: Signals, cb: Definitions[S]): void {
     if (this.#isDisposed) {
       return;
     }
