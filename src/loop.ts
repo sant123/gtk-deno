@@ -4,46 +4,46 @@ const instances = new Set<bigint>();
 
 let running = false;
 let scheduled = false;
+let delayMs = 1;
+let timerId: number | null = null;
 
-let idleBackoffMs = 1;
-const MAX_BACKOFF_MS = 8; // 1000 / 8 = 125 Hz
+const BUSY_MIN_MS = 1;
+const IDLE_MAX_MS = 16; // 60 Hz
 
-let spinCount = 0;
-const YIELD_EVERY = 50; // Cycles
+const MAX_ITERS_PER_PUMP = 1000;
+const TIME_BUDGET_MS = 8;
 
 function drainGtkOnce(): boolean {
   return lib.symbols.g_main_context_iteration(null, false);
 }
 
 function pump(): void {
-  let didWork = false;
   scheduled = false;
+  timerId = null;
 
-  while (drainGtkOnce()) {
+  let didWork = false;
+  const deadline = performance.now() + TIME_BUDGET_MS;
+
+  for (let i = 0; i < MAX_ITERS_PER_PUMP; i++) {
+    const dispatched = drainGtkOnce();
+
+    if (!dispatched) {
+      break;
+    }
+
     didWork = true;
+
+    if (performance.now() >= deadline) {
+      break;
+    }
   }
 
   if (!running) {
     return;
   }
 
-  if (didWork) {
-    idleBackoffMs = 1;
-
-    if (++spinCount === YIELD_EVERY) {
-      spinCount = 0;
-      setTimeout(schedule, 0);
-    } else {
-      schedule();
-    }
-  } else {
-    spinCount = 0;
-    setTimeout(schedule, idleBackoffMs);
-
-    if (idleBackoffMs < MAX_BACKOFF_MS) {
-      idleBackoffMs <<= 1;
-    }
-  }
+  delayMs = didWork ? BUSY_MIN_MS : Math.min((delayMs || 1) << 1, IDLE_MAX_MS);
+  schedule();
 }
 
 function schedule(): void {
@@ -52,7 +52,7 @@ function schedule(): void {
   }
 
   scheduled = true;
-  queueMicrotask(pump);
+  timerId = setTimeout(pump, delayMs);
 }
 
 function start(): void {
@@ -61,14 +61,18 @@ function start(): void {
   }
 
   running = true;
-  idleBackoffMs = 1;
-  spinCount = 0;
+  delayMs = 1;
   schedule();
 }
 
 function stop(): void {
   running = false;
   scheduled = false;
+
+  if (timerId !== null) {
+    clearTimeout(timerId);
+    timerId = null;
+  }
 }
 
 export function ref(ptr: Deno.PointerValue<unknown>): void {
