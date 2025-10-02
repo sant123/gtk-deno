@@ -32,4 +32,24 @@ export const symbols = {
   ...GtkFileDialog,
   ...GtkFileFilter,
   ...GtkWindow,
-};
+  gdk_display_get_default: {
+    parameters: [],
+    result: "pointer",
+  },
+  gdk_display_get_clipboard: {
+    parameters: ["pointer"],
+    result: "pointer",
+  },
+  gdk_clipboard_set_text: {
+    parameters: ["pointer", "pointer"],
+    result: "void",
+  },
+  gdk_clipboard_store_async: {
+    parameters: ["pointer", "i32", "pointer", "pointer", "pointer"],
+    result: "void",
+  },
+  gdk_clipboard_store_finish: {
+    parameters: ["pointer", "pointer", "pointer"],
+    result: "bool",
+  },
+} satisfies Deno.ForeignLibraryInterface;
