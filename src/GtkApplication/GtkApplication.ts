@@ -63,7 +63,7 @@ export class GtkApplication extends Signal<typeof ffiDefinitions> {
     isDisposed: (): boolean => {
       return this.#isDisposed;
     },
-    getGtkApplicationPtr: () => {
+    getGtkApplicationPtr: (): Deno.PointerValue => {
       return this.#gtkApplicationPtr;
     },
   };
