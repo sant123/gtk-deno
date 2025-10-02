@@ -32,14 +32,11 @@ export abstract class GtkBaseDialog {
   }, this.#handleGAsyncReadyCallback.bind(this));
 
   constructor() {
-    lib.symbols.gtk_init();
-
     /**
      * @pointer GtkFileDialog
      */
     this.#gtkFileDialogPtr = lib.symbols.gtk_file_dialog_new();
-
-    ref(this);
+    ref(this.#gtkFileDialogPtr);
   }
 
   #handleGAsyncReadyCallback(
@@ -109,7 +106,7 @@ export abstract class GtkBaseDialog {
     lib.symbols.g_object_unref(this.#gtkFileDialogPtr);
     this.#isDisposed = true;
 
-    unref(this);
+    unref(this.#gtkFileDialogPtr);
   }
 
   get acceptLabel(): string | null {
