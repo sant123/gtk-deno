@@ -2,54 +2,51 @@ import { lib } from "lib";
 
 const instances = new Set<bigint>();
 
-const FAST = 11; // ~90 hz;
+const FAST = 1; // 1000 hz;
 const SLOW = 16; // ~60 hz;
 const IDLE = 100; // 10 hz
-const BURST_MAX = 8;
+const BURST_MAX = 100;
 const LONG_IDLE_CUTOFF = 200;
 
 let delay = SLOW;
 let burst = 0;
 let idleTicks = 0;
 let running = false;
-let timerId: number | null = null;
 let ticking = false;
 
 function schedule() {
-  if (!running || ticking) {
+  if (ticking) {
     return;
   }
 
   ticking = true;
 
-  try {
-    let did = 0;
+  let did = false;
 
-    while (lib.symbols.g_main_context_iteration(null, false)) {
-      did = 1;
-    }
-
-    const pending = lib.symbols.g_main_context_pending(null);
-
-    if (did || pending) {
-      idleTicks = 0;
-      if (burst < BURST_MAX) {
-        burst++;
-        delay = FAST;
-      } else {
-        delay = SLOW;
-      }
-    } else {
-      burst = 0;
-      idleTicks++;
-      delay = idleTicks > LONG_IDLE_CUTOFF ? IDLE : SLOW;
-    }
-  } finally {
-    ticking = false;
+  while (lib.symbols.g_main_context_iteration(null, false)) {
+    did = true;
   }
 
-  if (running) {
-    timerId = setTimeout(schedule, delay);
+  const pending = lib.symbols.g_main_context_pending(null);
+
+  if (did || pending) {
+    idleTicks = 0;
+    if (burst < BURST_MAX) {
+      burst++;
+      delay = FAST;
+    } else {
+      delay = SLOW;
+    }
+  } else {
+    burst = 0;
+    idleTicks++;
+    delay = idleTicks > LONG_IDLE_CUTOFF ? IDLE : SLOW;
+  }
+
+  ticking = false;
+
+  if (running || did) {
+    setTimeout(schedule, delay);
   }
 }
 
@@ -64,12 +61,6 @@ function start(): void {
 
 function stop(): void {
   running = false;
-
-  if (timerId !== null) {
-    clearTimeout(timerId);
-    timerId = null;
-  }
-
   burst = 0;
   idleTicks = 0;
   delay = SLOW;
