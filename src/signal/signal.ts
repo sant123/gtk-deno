@@ -13,6 +13,7 @@ export abstract class Signal<
     cb: CallbackFromDef<D[K]>,
     ptr: Deno.PointerValue,
     definition: D[K],
+    connectFlags = GtkConnectFlags.G_CONNECT_DEFAULT,
   ): void {
     const handler = new Deno.UnsafeCallback(
       definition as Deno.UnsafeCallbackDefinition,
@@ -25,7 +26,7 @@ export abstract class Signal<
       handler.pointer,
       null,
       null,
-      GtkConnectFlags.G_CONNECT_DEFAULT,
+      connectFlags,
     );
 
     this.#handlers.push(handler);

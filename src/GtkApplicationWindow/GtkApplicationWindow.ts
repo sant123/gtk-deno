@@ -20,11 +20,6 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
   #hasClosed = false;
   #isDisposed = false;
 
-  #unsafeCloseRequestCallBack = new Deno.UnsafeCallback(
-    ffiDefinitions["close-request"],
-    this.#handleCloseRequestCallback.bind(this),
-  );
-
   #options: GtkApplicationWindowOptions = {
     title: null,
   };
@@ -43,12 +38,11 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
       this.#app[GtkSymbol].getGtkApplicationPtr(),
     );
 
-    lib.symbols.g_signal_connect_data(
+    super.connect(
+      "close-request",
+      this.#handleCloseRequestCallback.bind(this),
       this.#gtkApplicationWindowPtr,
-      getPtrFromString("close-request"),
-      this.#unsafeCloseRequestCallBack.pointer,
-      null,
-      null,
+      ffiDefinitions["close-request"],
       GtkConnectFlags.G_CONNECT_AFTER,
     );
 
@@ -102,11 +96,6 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
     }
 
     unref(this.#gtkApplicationWindowPtr);
-
-    setTimeout(() => {
-      this.#unsafeCloseRequestCallBack.close();
-    });
-
     super.dispose();
     this.#isDisposed = true;
   }
