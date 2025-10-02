@@ -32,13 +32,10 @@ export abstract class GtkBaseDialog {
   }, this.#handleGAsyncReadyCallback.bind(this));
 
   constructor() {
-    lib.symbols.gtk_init();
-
     /**
      * @pointer GtkFileDialog
      */
     this.#gtkFileDialogPtr = lib.symbols.gtk_file_dialog_new();
-
     ref(this.#gtkFileDialogPtr);
   }
 

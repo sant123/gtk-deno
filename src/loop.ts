@@ -1,5 +1,7 @@
 import { lib } from "lib";
 
+lib.symbols.gtk_init();
+
 const instances = new Set<bigint>();
 
 const FAST = 1; // 1000 hz;
