@@ -101,6 +101,15 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
   }
 
   /**
+   * **UNSAFE**: Highly unsafe API, beware!
+   *
+   * Returns an unsafe pointer to a [GtkApplicationWindow](https://docs.gtk.org/gtk4/class.ApplicationWindow.html)
+   */
+  getUnsafePointer(): Deno.PointerValue {
+    return this.#gtkApplicationWindowPtr;
+  }
+
+  /**
    * Presents a window to the user.
    *
    * This may mean raising the window in the stacking order, unminimizing it, moving it to the current desktop and/or giving it the keyboard focus (possibly dependent on the user’s platform, window manager and preferences).
