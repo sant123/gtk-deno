@@ -102,7 +102,7 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
 
   /**
    * **UNSAFE**: Highly unsafe API, beware!
-   * 
+   *
    * Returns an unsafe pointer to a [GtkApplicationWindow](https://docs.gtk.org/gtk4/class.ApplicationWindow.html)
    */
   getUnsafePointer(): Deno.PointerValue {
