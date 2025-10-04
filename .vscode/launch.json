@@ -18,10 +18,10 @@
       "outputCapture": "std"
     },
     {
-      "name": "(Clang++) Debug main.c",
+      "name": "(gdb) Debug main.c",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/main",
+      "program": "${workspaceFolder}/builddir/app",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -40,7 +40,7 @@
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "deno: build:gtk"
+      "preLaunchTask": "Meson: Build app:executable"
     }
   ]
 }
