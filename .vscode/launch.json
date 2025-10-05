@@ -18,10 +18,10 @@
       "outputCapture": "std"
     },
     {
-      "name": "(gdb) Debug main.c",
+      "name": "(gdb) Debug example",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/builddir/app",
+      "program": "${workspaceFolder}/builddir/example",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -40,7 +40,7 @@
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "Meson: Build app:executable"
+      "preLaunchTask": "Meson: Build example:executable"
     }
   ]
 }

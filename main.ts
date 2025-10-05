@@ -1,12 +1,25 @@
-import { getPtrFromString } from "utils";
+// export function getPtrFromString(str: string): Deno.PointerValue<unknown> {
+//   const bytes = new TextEncoder().encode(str + "\0");
+//   const stringPtr = Deno.UnsafePointer.of(bytes);
+
+//   return stringPtr;
+// }
 
 const lib = Deno.dlopen("builddir/libgtk_deno.so", {
-  run_app: {
+  main_gtk_init: {
     parameters: [],
-    result: "i32",
+    result: "void",
   },
-  ui_set_label_text: {
-    parameters: ["pointer"],
+  main_loop_run: {
+    parameters: [],
+    result: "void",
+  },
+  worker_run_app: {
+    parameters: [],
+    result: "void",
+  },
+  worker_loop_quit: {
+    parameters: [],
     result: "void",
   },
 });
@@ -15,11 +28,11 @@ const url = new URL(import.meta.url);
 const isMainThread = !url.searchParams.has("worker");
 
 if (isMainThread) {
-  const w = new Worker(`${import.meta.url}?worker=1`, { type: "module" });
-  const status = lib.symbols.run_app();
-  console.log("Got status from app %d", status);
+  lib.symbols.main_gtk_init();
+  const w = new Worker(`${import.meta.url}?worker`, { type: "module" });
+  lib.symbols.main_loop_run();
+  console.log("Return from main loop run!");
   w.terminate();
 } else {
-  const cstr = getPtrFromString("Hellouuuu from Deno Workersito!");
-  lib.symbols.ui_set_label_text(cstr);
+  lib.symbols.worker_run_app();
 }
