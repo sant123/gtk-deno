@@ -5,7 +5,7 @@
 //   return stringPtr;
 // }
 
-const lib = Deno.dlopen("builddir/libgtk_deno.so", {
+const lib = Deno.dlopen("build/libgtk_deno.so", {
   main_gtk_init: {
     parameters: [],
     result: "void",

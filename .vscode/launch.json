@@ -21,7 +21,7 @@
       "type": "lldb-dap",
       "request": "launch",
       "name": "(lldb) Debug example",
-      "program": "${workspaceFolder}/builddir/example",
+      "program": "${workspaceFolder}/build/example",
       "args": [],
       "env": [],
       "cwd": "${workspaceFolder}",
