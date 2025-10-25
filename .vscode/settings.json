@@ -1,13 +1,5 @@
 {
-  "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
-  "C_Cpp.default.compileCommands": ["builddir/compile_commands.json"],
-  "mesonbuild.modifySettings": false,
-  "[c]": {
-    "editor.defaultFormatter": "xaver.clang-format"
-  },
-  "[cpp]": {
-    "editor.defaultFormatter": "xaver.clang-format"
-  },
+  "mesonbuild.buildFolder": "build",
   "[json]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
