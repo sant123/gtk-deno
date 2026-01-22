@@ -18,7 +18,7 @@ export abstract class GtkDialog {
   #result = GtkDialogResult.None;
 
   #options: GtkDialogOptions = {
-    acceptLabel: "",
+    acceptLabel: null,
     initialFolder: "",
     title: "",
   };
