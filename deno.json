@@ -37,10 +37,5 @@
   },
   "lint": {
     "exclude": ["gtk4", "third_party"]
-  },
-  "compilerOptions": {
-    "lib": [
-      "deno.worker"
-    ]
   }
 }
