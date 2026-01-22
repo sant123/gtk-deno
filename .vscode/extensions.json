@@ -1,3 +1,8 @@
 {
-  "recommendations": ["denoland.vscode-deno", "xaver.clang-format"]
+  "recommendations": [
+    "denoland.vscode-deno",
+    "llvm-vs-code-extensions.lldb-dap",
+    "llvm-vs-code-extensions.vscode-clangd",
+    "mesonbuild.mesonbuild"
+  ]
 }

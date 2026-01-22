@@ -18,29 +18,14 @@
       "outputCapture": "std"
     },
     {
-      "name": "(Clang++) Debug main.c",
-      "type": "cppdbg",
+      "type": "lldb-dap",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/main",
+      "name": "(lldb) Debug example",
+      "program": "${workspaceFolder}/build/example",
       "args": [],
-      "stopAtEntry": false,
+      "env": [],
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Set Disassembly Flavor to Intel",
-          "text": "-gdb-set disassembly-flavor intel",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "deno: build:gtk"
+      "preLaunchTask": "Meson: Build example:executable"
     }
   ]
 }
