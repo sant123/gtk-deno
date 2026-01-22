@@ -1,10 +1,5 @@
 {
-  "[c]": {
-    "editor.defaultFormatter": "xaver.clang-format"
-  },
-  "[cpp]": {
-    "editor.defaultFormatter": "xaver.clang-format"
-  },
+  "mesonbuild.buildFolder": "build",
   "[json]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
