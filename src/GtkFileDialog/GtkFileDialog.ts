@@ -2,11 +2,7 @@ import { getPtrFromString, GtkSymbol } from "utils";
 import { lib } from "lib";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
 import { GtkBaseDialog } from "./GtkBaseDialog.ts";
-
-const EMPTY_DEFAULT_FILTER = "Default file filter is empty.";
-const EMPTY_FILTERS = "One or more filters in setFilters() is empty.";
-const DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS =
-  "The default filter must be present in the filter list.";
+import * as errors from "../messages/GtkFileDialog.errors.ts";
 
 interface GtkFileDialogOptions {
   initialFile: string;
@@ -37,7 +33,7 @@ export abstract class GtkFileDialog extends GtkBaseDialog {
     const isDefaultFilterEmpty = this.#defaultFilter?.[GtkSymbol].isEmpty();
 
     if (isDefaultFilterEmpty) {
-      throw new Error(EMPTY_DEFAULT_FILTER);
+      throw new Error(errors.EMPTY_DEFAULT_FILTER);
     }
 
     const someFilterIsEmpty = this.#filters.some((filter) =>
@@ -45,14 +41,14 @@ export abstract class GtkFileDialog extends GtkBaseDialog {
     );
 
     if (someFilterIsEmpty) {
-      throw new Error(EMPTY_FILTERS);
+      throw new Error(errors.EMPTY_FILTERS);
     }
 
     if (
       this.#defaultFilter && this.#filters.length &&
       !this.#filters.includes(this.#defaultFilter)
     ) {
-      throw new Error(DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS);
+      throw new Error(errors.DEFAULT_FILTER_NOT_EXISTS_IN_FILTERS);
     }
   }
 
