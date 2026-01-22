@@ -3,12 +3,12 @@ import { lib } from "lib";
 
 import { getDialogResultFromGError } from "./misc/utils.ts";
 import { GtkDialogResult } from "./misc/types.ts";
-import { GtkBaseDialog } from "./GtkBaseDialog.ts";
+import { GtkDialog } from "./GtkDialog.ts";
 
 /**
  * File chooser dialog to allow selecting multiple folders
  */
-export class GtkSelectMultipleFolderDialog extends GtkBaseDialog {
+export class GtkSelectMultipleFolderDialog extends GtkDialog {
   #selectedPaths: string[] = [];
 
   constructor() {

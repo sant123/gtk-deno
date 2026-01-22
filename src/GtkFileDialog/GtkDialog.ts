@@ -3,13 +3,13 @@ import { lib } from "lib";
 import { ref, unref } from "loop";
 import { GtkDialogResult } from "./misc/types.ts";
 
-interface GtkBaseDialogOptions {
+interface GtkDialogOptions {
   acceptLabel: string | null;
   initialFolder: string;
   title: string;
 }
 
-export abstract class GtkBaseDialog {
+export abstract class GtkDialog {
   #callBackResult: PromiseWithResolvers<void> | null = null;
   #cancellable: Deno.PointerValue<unknown> = null;
   #gtkFileDialogPtr: Deno.PointerValue<unknown> = null;
@@ -17,7 +17,7 @@ export abstract class GtkBaseDialog {
   #queue: Promise<void> = Promise.resolve();
   #result = GtkDialogResult.None;
 
-  #options: GtkBaseDialogOptions = {
+  #options: GtkDialogOptions = {
     acceptLabel: "",
     initialFolder: "",
     title: "",

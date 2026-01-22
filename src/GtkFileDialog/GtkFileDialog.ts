@@ -1,7 +1,7 @@
 import { getPtrFromString, GtkSymbol } from "utils";
 import { lib } from "lib";
 import type { GtkFileFilter } from "../GtkFileFilter/GtkFileFilter.ts";
-import { GtkBaseDialog } from "./GtkBaseDialog.ts";
+import { GtkDialog } from "./GtkDialog.ts";
 import * as errors from "../messages/GtkFileDialog.errors.ts";
 
 interface GtkFileDialogOptions {
@@ -9,7 +9,7 @@ interface GtkFileDialogOptions {
   initialName: string;
 }
 
-export abstract class GtkFileDialog extends GtkBaseDialog {
+export abstract class GtkFileDialog extends GtkDialog {
   #defaultFilter: GtkFileFilter | null = null;
   #filters: GtkFileFilter[] = [];
   #listStorePtr: Deno.PointerValue<unknown> = null;
