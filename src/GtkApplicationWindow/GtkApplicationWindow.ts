@@ -3,9 +3,9 @@ import { GtkConnectFlags, Signal } from "signal";
 import { lib } from "lib";
 import { ref, unref } from "loop";
 
-import { GTK_APPLICATION_DISPOSED } from "./GtkApplicationWindowErrors.ts";
 import { type Definitions, ffiDefinitions, type Signals } from "./events.ts";
 import type { GtkApplication } from "../GtkApplication/GtkApplication.ts";
+import { GTK_APPLICATION_DISPOSED } from "../messages/GtkApplicationWindow.errors.ts";
 
 interface GtkApplicationWindowOptions {
   title: string | null;
