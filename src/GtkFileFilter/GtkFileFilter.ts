@@ -93,10 +93,6 @@ export class GtkFileFilter {
   }
 
   dispose(): void {
-    this[Symbol.dispose]();
-  }
-
-  [Symbol.dispose](): void {
     if (this.#isDisposed) {
       return;
     }
@@ -106,6 +102,10 @@ export class GtkFileFilter {
      */
     lib.symbols.g_object_unref(this.#gtkFileFilterPtr);
     this.#isDisposed = true;
+  }
+
+  [Symbol.dispose](): void {
+    this.dispose();
   }
 
   /**

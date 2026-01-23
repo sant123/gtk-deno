@@ -84,10 +84,6 @@ export abstract class GtkDialog {
    * Release all attached pointers. The `using` keyword call this method automatically.
    */
   dispose(): void {
-    this[Symbol.dispose]();
-  }
-
-  [Symbol.dispose](): void {
     if (this.#isDisposed) {
       return;
     }
@@ -107,6 +103,10 @@ export abstract class GtkDialog {
     this.#isDisposed = true;
 
     unref(this.#gtkFileDialogPtr);
+  }
+
+  [Symbol.dispose](): void {
+    this.dispose();
   }
 
   get acceptLabel(): string | null {
