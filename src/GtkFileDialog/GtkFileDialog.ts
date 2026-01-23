@@ -84,6 +84,10 @@ export abstract class GtkFileDialog extends GtkDialog {
    * @param filter The file filter.
    */
   addFilter(filter: GtkFileFilter): void {
+    if (this[GtkSymbol].isDisposed()) {
+      return;
+    }
+
     this.#initializeGListStore();
     const filterPtr = filter[GtkSymbol].getGtkFileFilterPtr();
     lib.symbols.g_list_store_append(this.#listStorePtr, filterPtr);
@@ -99,6 +103,10 @@ export abstract class GtkFileDialog extends GtkDialog {
    * @param filter The file filter.
    */
   setDefaultFilter(filter: GtkFileFilter | null): void {
+    if (this[GtkSymbol].isDisposed()) {
+      return;
+    }
+
     const filterPtr = filter?.[GtkSymbol].getGtkFileFilterPtr() ?? null;
 
     lib.symbols.gtk_file_dialog_set_default_filter(
@@ -116,6 +124,10 @@ export abstract class GtkFileDialog extends GtkDialog {
    * @param filters A params file filter
    */
   setFilters(...filters: GtkFileFilter[]): void {
+    if (this[GtkSymbol].isDisposed()) {
+      return;
+    }
+
     this.#initializeGListStore();
 
     const ptrArray = new BigUint64Array(filters.length);
