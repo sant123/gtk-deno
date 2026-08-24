@@ -20,7 +20,7 @@ app.connect("activate", () => {
 
   window.connect("close-request", () => {
     clearInterval(timer);
-    return 0;
+    return false;
   });
   window.present();
 });
