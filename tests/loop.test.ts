@@ -3,6 +3,7 @@ import { assert, assertEquals } from "@std/assert";
 import {
   IDLE_POLL_INTERVAL,
   type LoopScheduler,
+  MAX_ITERATIONS_PER_TICK,
   PollingEventLoop,
 } from "../src/PollingEventLoop.ts";
 
@@ -90,6 +91,24 @@ Deno.test("active GLib work is fully drained then yields with a timer task", () 
   loop.ref(1n);
   scheduler.runNext();
 
+  assertEquals(scheduler.delays, [0, 0]);
+  assert(loop.isScheduled);
+});
+
+Deno.test("continuously ready GLib work yields after one tick budget", () => {
+  const scheduler = new FakeScheduler();
+  let calls = 0;
+  const loop = new PollingEventLoop({
+    iteration: () => {
+      calls++;
+      return true;
+    },
+  }, scheduler);
+
+  loop.ref(1n);
+  scheduler.runNext();
+
+  assertEquals(calls, MAX_ITERATIONS_PER_TICK);
   assertEquals(scheduler.delays, [0, 0]);
   assert(loop.isScheduled);
 });
