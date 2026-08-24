@@ -3,7 +3,7 @@ import type { CallbackFromDef } from "signal";
 export const ffiDefinitions = {
   "close-request": {
     parameters: ["pointer", "pointer"],
-    result: "bool",
+    result: "i32",
   },
 } as const;
 

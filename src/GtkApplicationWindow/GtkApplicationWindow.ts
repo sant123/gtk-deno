@@ -49,10 +49,10 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
     ref(this.#gtkApplicationWindowPtr);
   }
 
-  #handleCloseRequestCallback(): boolean {
+  #handleCloseRequestCallback(): number {
     this.#hasClosed = true;
     this.dispose();
-    return false;
+    return 0;
   }
 
   override connect<S extends Signals>(event: S, cb: Definitions[S]): void {

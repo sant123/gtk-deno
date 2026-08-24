@@ -6,7 +6,7 @@ lib.symbols.gtk_init();
 const eventLoop = new PollingEventLoop({
   // `iteration()` returning false means the drain is complete, so a separate
   // g_main_context_pending() check would not change the scheduling decision.
-  iteration: () => lib.symbols.g_main_context_iteration(null, false),
+  iteration: () => lib.symbols.g_main_context_iteration(null, 0) !== 0,
 });
 
 export function ref(ptr: Deno.PointerValue): void {

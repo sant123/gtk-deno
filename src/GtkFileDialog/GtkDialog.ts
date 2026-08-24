@@ -90,7 +90,7 @@ export abstract class GtkDialog {
 
     if (this.#cancellable) {
       lib.symbols.g_cancellable_cancel(this.#cancellable);
-      lib.symbols.g_main_context_iteration(null, true);
+      lib.symbols.g_main_context_iteration(null, 1);
     }
 
     this[GtkSymbol].child.onBeforeDispose();
