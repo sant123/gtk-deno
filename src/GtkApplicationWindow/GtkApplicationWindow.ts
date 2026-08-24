@@ -91,12 +91,13 @@ export class GtkApplicationWindow extends Signal<typeof ffiDefinitions> {
       return;
     }
 
+    super.dispose();
+
     if (!this.#hasClosed) {
       lib.symbols.gtk_window_destroy(this.#gtkApplicationWindowPtr);
     }
 
     unref(this.#gtkApplicationWindowPtr);
-    super.dispose();
     this.#isDisposed = true;
   }
 

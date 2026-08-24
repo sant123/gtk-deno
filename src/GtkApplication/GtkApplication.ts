@@ -47,11 +47,11 @@ export class GtkApplication extends Signal<typeof ffiDefinitions> {
       return;
     }
 
+    super.dispose();
     /**
      * @release GtkApplication
      */
     lib.symbols.g_object_unref(this.#gtkApplicationPtr);
-    super.dispose();
     this.#isDisposed = true;
   }
 
