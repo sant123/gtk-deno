@@ -6,9 +6,10 @@ Gtk4 widget bindings for Deno.
 
 gtk-deno automatically services GLib while GTK-backed windows and dialogs are
 alive; applications do not need to start or stop an event loop manually. The
-integration always uses non-blocking GLib iterations, drains ready GLib work,
-and then yields through a zero-delay timer so Deno timers, promises, and I/O
-remain runnable. When GLib is idle it polls approximately every 16 ms.
+integration always uses non-blocking GLib iterations and processes ready GLib
+work in bounded batches. Active GLib work yields through a zero-delay timer so
+Deno timers, promises, and I/O get regular event-loop turns; idle GLib polling
+remains approximately every 16 ms.
 
 Closing or disposing the final GTK-backed object stops the poll timer. Creating
 a new object starts it again.

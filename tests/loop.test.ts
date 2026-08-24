@@ -86,7 +86,7 @@ Deno.test("final release cancels future polling and a new reference restarts it"
   assertEquals(scheduler.delays, [0, 0]);
 });
 
-Deno.test("active GLib work is fully drained then yields with a timer task", () => {
+Deno.test("active GLib work is processed then yields with a timer task", () => {
   const { loop, scheduler } = createLoop([true, true, false]);
   loop.ref(1n);
   scheduler.runNext();
@@ -125,7 +125,7 @@ Deno.test("an idle GLib context waits instead of busy-spinning", () => {
 Deno.test("active GLib polling leaves Deno promises and timers runnable", async () => {
   let calls = 0;
   const loop = new PollingEventLoop({
-    // Every tick handles one source, then finishes draining it.
+    // Every tick handles one source, then finds no immediately ready work.
     iteration: () => ++calls % 2 === 1,
   });
   loop.ref(1n);

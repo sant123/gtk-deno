@@ -1,7 +1,7 @@
 /** Polling interval used only after GLib has no immediately dispatchable work. */
 export const IDLE_POLL_INTERVAL = 16;
 
-/** Maximum ready GLib sources dispatched before yielding to Deno. */
+/** Prevent continuously-ready GLib sources from starving Deno. */
 export const MAX_ITERATIONS_PER_TICK = 64;
 
 type Timer = ReturnType<typeof setTimeout>;
@@ -24,11 +24,9 @@ const defaultScheduler: LoopScheduler = { setTimeout, clearTimeout };
 /**
  * Keeps a GLib main context moving while GTK-backed objects exist.
  *
- * A tick drains ready GLib work up to `MAX_ITERATIONS_PER_TICK`. Work is
- * followed by a zero-delay timer, which yields a macrotask turn to Deno before
- * polling GLib again; this prevents both a microtask chain and a continuously
- * ready GLib source from starving Deno timers and I/O. `timer` is the only
- * scheduled state: its presence means the loop is scheduled.
+ * A tick processes a bounded batch of ready GLib work. Active work yields via
+ * a zero-delay timer so Deno gets a normal event-loop turn; idle polling uses
+ * a separate interval. `timer` is the only scheduled state.
  */
 export class PollingEventLoop {
   #instances = new Set<bigint>();
@@ -93,7 +91,7 @@ export class PollingEventLoop {
     }
     if (!this.#running) return;
 
-    // A timer task, rather than a microtask continuation, preserves Deno fairness.
+    // Active work yields to Deno; only idle contexts wait for the polling interval.
     this.schedule(didWork ? 0 : IDLE_POLL_INTERVAL);
   }
 }
