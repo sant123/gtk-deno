@@ -1,9 +1,11 @@
 import type { CallbackFromDef } from "signal";
+import { toGBoolean } from "utils";
 
 export const ffiDefinitions = {
   "close-request": {
     parameters: ["pointer", "pointer"],
-    result: "bool",
+    result: "i32",
+    transformResult: toGBoolean,
   },
 } as const;
 

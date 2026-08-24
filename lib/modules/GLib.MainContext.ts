@@ -1,10 +1,6 @@
 export const GLibMainContext = {
   g_main_context_iteration: {
-    parameters: ["pointer", "bool"],
-    result: "bool",
-  },
-  g_main_context_pending: {
-    parameters: ["pointer"],
-    result: "bool",
+    parameters: ["pointer", "i32"],
+    result: "i32",
   },
 } satisfies Deno.ForeignLibraryInterface;

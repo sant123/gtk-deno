@@ -5,6 +5,6 @@ export const GioApplication = {
   },
   g_application_register: {
     parameters: ["pointer", "pointer", "pointer"],
-    result: "bool",
+    result: "i32",
   },
 } satisfies Deno.ForeignLibraryInterface;

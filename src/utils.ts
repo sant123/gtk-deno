@@ -3,6 +3,11 @@ import { lib } from "lib";
 
 export const GtkSymbol = Symbol("GtkSymbol");
 
+/** Convert a TypeScript boolean to GLib's ABI-compatible gboolean value. */
+export function toGBoolean(value: boolean): number {
+  return value ? 1 : 0;
+}
+
 export function getGErrorFromDoublePtr(
   ptr: Deno.PointerValue<unknown>,
 ): GError | null {
