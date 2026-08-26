@@ -51,18 +51,28 @@ export class PollingEventLoop {
   }
 
   ref(instance: bigint): void {
-    if (instance === 0n || this.#instances.has(instance)) return;
+    if (instance === 0n || this.#instances.has(instance)) {
+      return;
+    }
     this.#instances.add(instance);
-    if (this.#instances.size === 1) this.start();
+    if (this.#instances.size === 1) {
+      this.start();
+    }
   }
 
   unref(instance: bigint): void {
-    if (instance === 0n || !this.#instances.delete(instance)) return;
-    if (this.#instances.size === 0) this.stop();
+    if (instance === 0n || !this.#instances.delete(instance)) {
+      return;
+    }
+    if (this.#instances.size === 0) {
+      this.stop();
+    }
   }
 
   private start(): void {
-    if (this.#running) return;
+    if (this.#running) {
+      return;
+    }
     this.#running = true;
     this.schedule(0);
   }
@@ -76,20 +86,28 @@ export class PollingEventLoop {
   }
 
   private schedule(delay: number): void {
-    if (!this.#running || this.#timer !== undefined) return;
+    if (!this.#running || this.#timer !== undefined) {
+      return;
+    }
     this.#timer = this.scheduler.setTimeout(() => this.tick(), delay);
   }
 
   private tick(): void {
     this.#timer = undefined;
-    if (!this.#running) return;
+    if (!this.#running) {
+      return;
+    }
 
     let didWork = false;
     for (let iteration = 0; iteration < MAX_ITERATIONS_PER_TICK; iteration++) {
-      if (!this.#running || !this.context.iteration()) break;
+      if (!this.#running || !this.context.iteration()) {
+        break;
+      }
       didWork = true;
     }
-    if (!this.#running) return;
+    if (!this.#running) {
+      return;
+    }
 
     // Active work yields to Deno; only idle contexts wait for the polling interval.
     this.schedule(didWork ? 0 : IDLE_POLL_INTERVAL);

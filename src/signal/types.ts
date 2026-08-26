@@ -2,6 +2,13 @@ export interface Closable {
   close(): void;
 }
 
+/** A native GObject signal connection retained by a Signal instance. */
+export interface SignalHandler {
+  id: bigint;
+  callback: Closable;
+  ptr: Deno.PointerValue;
+}
+
 /**
  * A signal callback definition with an optional conversion from its public
  * TypeScript result to the ABI result expected by GLib/GTK.
