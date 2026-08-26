@@ -59,7 +59,9 @@ export abstract class Signal<
     definition: D[K],
     connectFlags = GtkConnectFlags.G_CONNECT_DEFAULT,
   ): void {
-    if (this.#disposed) return;
+    if (this.#disposed) {
+      return;
+    }
 
     const wrappedCallback = (...args: unknown[]): unknown => {
       const result = (cb as (...args: unknown[]) => unknown)(...args);
@@ -95,7 +97,9 @@ export abstract class Signal<
   }
 
   dispose(): void {
-    if (this.#disposed) return;
+    if (this.#disposed) {
+      return;
+    }
 
     this.#disposed = true;
     const handlers = this.#handlers;

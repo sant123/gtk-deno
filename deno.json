@@ -22,6 +22,7 @@
     "./GtkFileFilter": "./src/GtkFileFilter/mod.ts"
   },
   "imports": {
+    "@aireone/deno-lint-curly": "jsr:@aireone/deno-lint-curly@^0.2.0",
     "@std/assert": "jsr:@std/assert@^1.0.11",
     "@std/async": "jsr:@std/async@^1.0.12",
     "@webview/webview": "jsr:@webview/webview@^0.9.0",
@@ -36,6 +37,7 @@
     "exclude": ["gtk4", "third_party"]
   },
   "lint": {
-    "exclude": ["gtk4", "third_party"]
+    "exclude": ["gtk4", "third_party"],
+    "plugins": ["jsr:@aireone/deno-lint-curly"]
   }
 }
